@@ -6,7 +6,9 @@ import com.example.fastboard.domain.member.dto.response.MemberSaveRes;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.service.MemberSaveService;
 import com.example.fastboard.global.common.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +25,7 @@ public class MemberController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<MemberSaveRes>> addMember(@RequestBody MemberSaveReq memberSaveReq) {
+    public ResponseEntity<ApiResponse<MemberSaveRes>> addMember(@RequestBody @Valid MemberSaveReq memberSaveReq) {
         Member member = memberSaveService.addMember(new MemberSaveParam(memberSaveReq));
         MemberSaveRes memberSaveRes = new MemberSaveRes(member);
 

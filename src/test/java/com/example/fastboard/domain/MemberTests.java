@@ -84,7 +84,21 @@ public class MemberTests {
 
     @Test
     @DisplayName("유저 저장 - 이메일 중복")
-    public void saveDuplicatedUser() {
+    public void saveEmailDuplicatedUser() {
+        // given
+        MemberSaveParam memberSaveParam = memberSaveParam();
+        when(memberRepository.existsByEmail(memberSaveParam.getEmail())).thenReturn(true); // 이메일이 중복되는 상황 가정.
+
+        // when & then
+        Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
+
+        verify(memberRepository, never()).save(any(Member.class)); // Save 가 한번도 호출되지 않음.
+    }
+
+
+    @Test
+    @DisplayName("유저 저장 - 닉네임 중복")
+    public void saveNickNameDuplicatedUser() {
         // given
         MemberSaveParam memberSaveParam = memberSaveParam();
         when(memberRepository.existsByEmail(memberSaveParam.getEmail())).thenReturn(true); // 이메일이 중복되는 상황 가정.

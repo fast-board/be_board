@@ -26,6 +26,7 @@ public class MemberSaveService {
          */
         if (memberRepository.existsByEmail(memberSaveParam.getEmail())) throw new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS);
         if (memberRepository.existsByNickname(memberSaveParam.getNickname())) throw new MemberException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
+        if (memberRepository.existsByPhoneNumber(memberSaveParam.getPhoneNumber())) throw new MemberException(MemberErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
 
 
         Member member = Member.builder()

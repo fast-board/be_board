@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public enum MemberErrorCode implements ErrorCode {
     NICKNAME_ALREADY_EXISTS("이미 사용 중인 닉네임입니다.", HttpStatus.CONFLICT),
-    EMAIL_ALREADY_EXISTS("이미 사용 중인 이메일입니다.", HttpStatus.CREATED);
+    PHONE_NUMBER_ALREADY_EXISTS("이미 등록된 번호입니다.", HttpStatus.CONFLICT),
+    EMAIL_ALREADY_EXISTS("이미 사용 중인 이메일입니다.", HttpStatus.CONFLICT);
 
     private final String message;
     private final HttpStatus status;
