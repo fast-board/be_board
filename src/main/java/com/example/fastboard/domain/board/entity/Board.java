@@ -21,6 +21,7 @@ public class Board extends BaseEntitySoftDelete {
     private String content;
     @Column(nullable = false)
     private Long view;
+    @Enumerated(EnumType.STRING)
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
