@@ -3,6 +3,8 @@ package com.example.fastboard.domain;
 import com.example.fastboard.domain.member.dto.parameter.MemberSaveParam;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.entity.Role;
+import com.example.fastboard.domain.member.exception.MemberErrorCode;
+import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.domain.member.repository.MemberRepository;
 import com.example.fastboard.domain.member.service.MemberSaveService;
 import org.junit.jupiter.api.Assertions;
@@ -81,7 +83,7 @@ public class MemberTests {
         when(memberRepository.existsByEmail(memberSaveParam.getEmail())).thenReturn(true); // 이메일이 중복되는 상황 가정.
 
         // when & then
-        Assertions.assertThrows(RuntimeException.class, () -> memberSaveService.addMember(memberSaveParam));
+        Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
 
         verify(memberRepository, never()).save(any(Member.class)); // Save 가 한번도 호출되지 않음.
     }

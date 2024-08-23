@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private MemberSaveService memberSaveService;
+    private final MemberSaveService memberSaveService;
 
 
     @PostMapping("/join")
