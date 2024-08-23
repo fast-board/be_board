@@ -2,7 +2,7 @@ package com.example.fastboard.domain.wish.entity;
 
 import com.example.fastboard.domain.board.entity.Board;
 import com.example.fastboard.domain.member.entity.Member;
-import com.example.fastboard.global.common.BaseEntity;
+import com.example.fastboard.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 

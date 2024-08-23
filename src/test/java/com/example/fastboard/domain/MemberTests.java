@@ -13,7 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -24,8 +27,12 @@ public class MemberTests {
     @Mock
     MemberRepository memberRepository;
 
+
     @InjectMocks
     MemberSaveService memberSaveService;
+
+    @Spy
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public MemberSaveParam memberSaveParam() {
         return MemberSaveParam.builder()
@@ -49,7 +56,7 @@ public class MemberTests {
                 .nickname("TestNickname")
                 .phoneNumber("TestPhoneNumber")
                 .role(Role.USER)
-                .encryptedPassword("TestEncryptedPassword")
+                .encryptedPassword(passwordEncoder.encode("TestPassword"))
                 .build();
 
         MemberSaveParam memberSaveParam = MemberSaveParam.builder()

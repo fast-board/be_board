@@ -7,6 +7,7 @@ import com.example.fastboard.domain.member.exception.MemberErrorCode;
 import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class MemberSaveService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public Member addMember(MemberSaveParam memberSaveParam) {
@@ -29,7 +31,7 @@ public class MemberSaveService {
         Member member = Member.builder()
                 .email(memberSaveParam.getEmail())
                 .nickname(memberSaveParam.getNickname())
-                .encryptedPassword(memberSaveParam.getPassword())
+                .encryptedPassword(passwordEncoder.encode(memberSaveParam.getPassword()))
                 .phoneNumber(memberSaveParam.getPhoneNumber())
                 .name(memberSaveParam.getName())
                 .role(Role.USER) // TODO : User Role
