@@ -1,4 +1,4 @@
-package com.example.fastboard.domain;
+package com.example.fastboard.domain.member.service;
 
 import com.example.fastboard.domain.member.dto.parameter.MemberSaveParam;
 import com.example.fastboard.domain.member.entity.Member;
@@ -6,7 +6,6 @@ import com.example.fastboard.domain.member.entity.Role;
 import com.example.fastboard.domain.member.exception.MemberErrorCode;
 import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.domain.member.repository.MemberRepository;
-import com.example.fastboard.domain.member.service.MemberSaveService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberTests {
+public class MemberSaveTests {
 
     @Mock
     MemberRepository memberRepository;

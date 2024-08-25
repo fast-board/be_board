@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberSaveService {
@@ -24,10 +26,16 @@ public class MemberSaveService {
          * TODO : unique 값을 가진 컬럼 : nickname, phoneNumber, email.
          * TODO : 세 가지를 다 묶어서 검색해야하는 것인가?
          */
-        if (memberRepository.existsByEmail(memberSaveParam.getEmail())) throw new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS);
-        if (memberRepository.existsByNickname(memberSaveParam.getNickname())) throw new MemberException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
-        if (memberRepository.existsByPhoneNumber(memberSaveParam.getPhoneNumber())) throw new MemberException(MemberErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
 
+        memberRepository.findFirstByEmailOrNicknameOrPhoneNumber(
+                memberSaveParam.getEmail(),
+                memberSaveParam.getNickname(),
+                memberSaveParam.getPhoneNumber()
+        ).ifPresent(member -> {
+            if (member.getEmail() == memberSaveParam.getEmail()) throw new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS);
+            if (member.getNickname() == memberSaveParam.getNickname()) throw new MemberException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
+            if (member.getPhoneNumber() == memberSaveParam.getPhoneNumber()) throw new MemberException(MemberErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
+        });
 
         Member member = Member.builder()
                 .email(memberSaveParam.getEmail())
