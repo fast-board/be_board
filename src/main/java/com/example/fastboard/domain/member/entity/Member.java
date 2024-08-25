@@ -2,9 +2,12 @@ package com.example.fastboard.domain.member.entity;
 
 import com.example.fastboard.global.common.BaseEntitySoftDelete;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Member extends BaseEntitySoftDelete {
     @Id
@@ -22,4 +25,14 @@ public class Member extends BaseEntitySoftDelete {
     private String encryptedPassword;
     @Column(nullable = false)
     private Role role;
+
+    @Builder
+    private Member(String name, String nickname, String phoneNumber, String email, String encryptedPassword, Role role) {
+        this.name = name;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.encryptedPassword = encryptedPassword;
+        this.role = role;
+    }
 }
