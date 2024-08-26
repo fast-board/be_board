@@ -12,7 +12,7 @@ public enum MemberErrorCode implements ErrorCode {
 
     private final String message;
     private final HttpStatus status;
-
+    
     MemberErrorCode(String message, HttpStatus status) {
         this.message = message;
         this.status = status;

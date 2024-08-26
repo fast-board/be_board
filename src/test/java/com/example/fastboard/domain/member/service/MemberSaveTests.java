@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -82,28 +84,74 @@ public class MemberSaveTests {
 
 
     @Test
-    @DisplayName("유저 저장 - 이메일 중복")
+    @DisplayName("유저 저장 실패 - 이메일 중복")
     public void saveEmailDuplicatedUser() {
         // given
         MemberSaveParam memberSaveParam = memberSaveParam();
-        when(memberRepository.existsByEmail(memberSaveParam.getEmail())).thenReturn(true); // 이메일이 중복되는 상황 가정.
+        Member member = Member.builder()
+                .id(1L)
+                .name(memberSaveParam.getName())
+                .email(memberSaveParam.getEmail())
+                .nickname(memberSaveParam.getNickname() + "salt")
+                .phoneNumber(memberSaveParam.getPhoneNumber() + "salt")
+                .encryptedPassword(memberSaveParam().getPassword())
+                .role(Role.USER)
+                .build();
+        when(memberRepository.findFirstByEmailOrNicknameOrPhoneNumber(memberSaveParam.getEmail(), memberSaveParam.getNickname(), memberSaveParam().getPhoneNumber()))
+                .thenReturn(Optional.ofNullable(member)); // 이메일이 중복되는 상황 가정.
 
         // when & then
-        Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
+        MemberException memberException = Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
+        Assertions.assertEquals(MemberErrorCode.EMAIL_ALREADY_EXISTS, memberException.getErrorCode());
 
         verify(memberRepository, never()).save(any(Member.class)); // Save 가 한번도 호출되지 않음.
     }
 
 
     @Test
-    @DisplayName("유저 저장 - 닉네임 중복")
+    @DisplayName("유저 저장 실패 - 닉네임 중복")
     public void saveNickNameDuplicatedUser() {
         // given
         MemberSaveParam memberSaveParam = memberSaveParam();
-        when(memberRepository.existsByEmail(memberSaveParam.getEmail())).thenReturn(true); // 이메일이 중복되는 상황 가정.
+        Member member = Member.builder()
+                .id(1L)
+                .name(memberSaveParam.getName())
+                .email(memberSaveParam.getEmail() + "salt")
+                .nickname(memberSaveParam.getNickname())
+                .phoneNumber(memberSaveParam.getPhoneNumber() + "salt")
+                .encryptedPassword(memberSaveParam().getPassword())
+                .role(Role.USER)
+                .build();
+        when(memberRepository.findFirstByEmailOrNicknameOrPhoneNumber(memberSaveParam.getEmail(), memberSaveParam().getNickname(), memberSaveParam.getPhoneNumber()))
+                .thenReturn(Optional.ofNullable(member)); // 이메일이 중복되는 상황 가정.
 
         // when & then
-        Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
+        MemberException memberException = Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
+        Assertions.assertEquals(MemberErrorCode.NICKNAME_ALREADY_EXISTS, memberException.getErrorCode());
+
+        verify(memberRepository, never()).save(any(Member.class)); // Save 가 한번도 호출되지 않음.
+    }
+
+    @Test
+    @DisplayName("유저 저장 실패 - 전화번호 중복")
+    public void savePhoneNumberDuplicatedUser() {
+        // given
+        MemberSaveParam memberSaveParam = memberSaveParam();
+        Member member = Member.builder()
+                .id(1L)
+                .name(memberSaveParam.getName())
+                .email(memberSaveParam.getEmail() + "salt")
+                .nickname(memberSaveParam.getNickname() + "salt")
+                .phoneNumber(memberSaveParam.getPhoneNumber())
+                .encryptedPassword(memberSaveParam().getPassword())
+                .role(Role.USER)
+                .build();
+        when(memberRepository.findFirstByEmailOrNicknameOrPhoneNumber(memberSaveParam.getEmail(), memberSaveParam.getNickname(), memberSaveParam().getPhoneNumber()))
+                .thenReturn(Optional.ofNullable(member)); // 이메일이 중복되는 상황 가정.
+
+        // when & then
+        MemberException memberException = Assertions.assertThrows(new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS).getClass(), () -> memberSaveService.addMember(memberSaveParam));
+        Assertions.assertEquals(MemberErrorCode.PHONE_NUMBER_ALREADY_EXISTS, memberException.getErrorCode());
 
         verify(memberRepository, never()).save(any(Member.class)); // Save 가 한번도 호출되지 않음.
     }
