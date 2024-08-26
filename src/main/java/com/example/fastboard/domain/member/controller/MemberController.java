@@ -1,9 +1,11 @@
 package com.example.fastboard.domain.member.controller;
 
 import com.example.fastboard.domain.member.dto.parameter.MemberSaveParam;
+import com.example.fastboard.domain.member.dto.request.MemberLoginReq;
 import com.example.fastboard.domain.member.dto.request.MemberSaveReq;
 import com.example.fastboard.domain.member.dto.response.MemberSaveRes;
 import com.example.fastboard.domain.member.entity.Member;
+import com.example.fastboard.domain.member.service.MemberLoginService;
 import com.example.fastboard.domain.member.service.MemberSaveService;
 import com.example.fastboard.global.common.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberSaveService memberSaveService;
+    private final MemberLoginService memberLoginService;
 
 
     @PostMapping("/join")
@@ -28,6 +31,12 @@ public class MemberController {
         Member member = memberSaveService.addMember(new MemberSaveParam(memberSaveReq));
         MemberSaveRes memberSaveRes = new MemberSaveRes(member);
 
-        return new ResponseEntity<>(new ApiResponse<>(HttpStatus.CREATED, memberSaveRes),HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse<>(HttpStatus.CREATED.value(), memberSaveRes),HttpStatus.CREATED);
+    }
+
+    @PostMapping("login")
+    public void loginMember(@RequestBody @Valid MemberLoginReq memberLoginReq) {
+
+
     }
 }

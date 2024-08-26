@@ -4,9 +4,11 @@ import com.example.fastboard.global.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum MemberErrorCode implements ErrorCode {
-    NICKNAME_ALREADY_EXISTS("이미 사용 중인 닉네임입니다.", HttpStatus.CONFLICT),
-    PHONE_NUMBER_ALREADY_EXISTS("이미 등록된 번호입니다.", HttpStatus.CONFLICT),
-    EMAIL_ALREADY_EXISTS("이미 사용 중인 이메일입니다.", HttpStatus.CONFLICT);
+    NICKNAME_ALREADY_EXISTS("이미 사용 중인 닉네임입니다.", HttpStatus.BAD_REQUEST),
+    PHONE_NUMBER_ALREADY_EXISTS("이미 등록된 번호입니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_ALREADY_EXISTS("이미 사용 중인 이메일입니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_FOUND("이메일이 일치하지 않습니다.", HttpStatus.NOT_FOUND),
+    PASSWORD_NOT_EQUAL("비밀번호가 일치하지 않습니다", HttpStatus.NOT_FOUND);
 
     private final String message;
     private final HttpStatus status;
