@@ -11,4 +11,12 @@ public class MemberException extends BasicException {
     public MemberException(ErrorCode errorCode, Throwable cause) {
         super(errorCode, cause);
     }
+
+    public MemberException(ErrorCode errorCode, Object data, Throwable cause) {
+        super(errorCode, data, cause);
+    }
+
+    public MemberException(ErrorCode errorCode, Object data) {
+        super(errorCode, data);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.fastboard.global.common.exception;
 
-import com.example.fastboard.global.common.response.ExceptionResponse;
+import com.example.fastboard.domain.member.exception.MemberException;
+import com.example.fastboard.global.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,18 +11,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BasicException.class)
-    public ResponseEntity<ExceptionResponse> handleBasicException(BasicException e) {
-        ExceptionResponse response = new ExceptionResponse(e);
-        HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
 
-        return new ResponseEntity<>(response, httpStatus);
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity<ApiResponse> handleMemberException(MemberException e) {
+        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getData());
+        return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
     }
 
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        ExceptionResponse response = new ExceptionResponse(e);
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        ApiResponse response = new ApiResponse(httpStatus.value(), e.getBindingResult().getFieldError().getDefaultMessage(), null );
 
         return new ResponseEntity<>(response, httpStatus);
     }

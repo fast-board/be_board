@@ -28,6 +28,6 @@ public class MemberController {
         Member member = memberSaveService.addMember(new MemberSaveParam(memberSaveReq));
         MemberSaveRes memberSaveRes = new MemberSaveRes(member);
 
-        return new ResponseEntity<>(new ApiResponse<>(HttpStatus.CREATED, memberSaveRes),HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse<>(HttpStatus.CREATED.value(), "회원가입에 성공하였습니다." ,memberSaveRes),HttpStatus.CREATED);
     }
 }

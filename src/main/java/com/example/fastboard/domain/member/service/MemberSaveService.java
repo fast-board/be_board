@@ -7,6 +7,7 @@ import com.example.fastboard.domain.member.exception.MemberErrorCode;
 import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberSaveService {
 
     private final MemberRepository memberRepository;
@@ -32,9 +34,9 @@ public class MemberSaveService {
                 memberSaveParam.getNickname(),
                 memberSaveParam.getPhoneNumber()
         ).ifPresent(member -> {
-            if (member.getEmail() == memberSaveParam.getEmail()) throw new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS);
-            if (member.getNickname() == memberSaveParam.getNickname()) throw new MemberException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
-            if (member.getPhoneNumber() == memberSaveParam.getPhoneNumber()) throw new MemberException(MemberErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
+            if (member.getEmail().equals(memberSaveParam.getEmail())) throw new MemberException(MemberErrorCode.EMAIL_ALREADY_EXISTS);
+            if (member.getNickname().equals(memberSaveParam.getNickname())) throw new MemberException(MemberErrorCode.NICKNAME_ALREADY_EXISTS);
+            if (member.getPhoneNumber().equals(memberSaveParam.getPhoneNumber())) throw new MemberException(MemberErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
         });
 
         Member member = Member.builder()
