@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ApiResponse> handleMemberException(MemberException e) {
-        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getData());
+        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getErrorInfo());
         return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
     }
 
