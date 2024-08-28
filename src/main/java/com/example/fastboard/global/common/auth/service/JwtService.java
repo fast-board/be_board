@@ -4,15 +4,16 @@ import com.example.fastboard.domain.member.entity.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
 
 import java.security.Key;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class JwtService {
     private final Key key;
     private final long accessTokenExpireTime = 1000 * 60 * 60; // 1시간.
@@ -49,20 +50,21 @@ public class JwtService {
     }
 
     public boolean validateToken(String token) {
-        if (!StringUtils.hasText(token)) {
+        try {
+            Claims claims = getClaims(token);
+            return claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
             return false;
         }
-
-        Claims claims = getClaims(token);
-        return claims.getExpiration().before(new Date());
-
     }
 
     public Claims getClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
-            return e.getClaims();
+            return e.getClaims(); // 토큰이 만료된 경우.
         } catch (MalformedJwtException e) { // 토큰 형식이 잘못된 경우.
             return null;
         } catch (SecurityException e) { // SignKey 가 잘못된 경우.

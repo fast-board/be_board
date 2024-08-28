@@ -34,3 +34,4 @@ public class BasicException extends RuntimeException {
         return errorInfo;
     }
 }
+

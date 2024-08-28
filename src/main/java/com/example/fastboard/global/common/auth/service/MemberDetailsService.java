@@ -18,4 +18,8 @@ public class MemberDetailsService implements UserDetailsService {
         return null;
     }
 
+
+    public UserDetails loadUserByUsernameWithRole(Long userId, String role) throws UsernameNotFoundException {
+        return new CustomUserDetails(userId, role);
+    }
 }

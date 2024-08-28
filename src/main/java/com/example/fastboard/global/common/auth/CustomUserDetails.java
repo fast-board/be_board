@@ -11,9 +11,9 @@ import java.util.Collections;
 public class CustomUserDetails implements UserDetails {
 
     private Long userId;
-    private Role role;
+    private String role;
 
-    public CustomUserDetails(Long userId, Role role) {
+    public CustomUserDetails(Long userId, String role) {
         this.userId = userId;
         this.role = role;
     }
@@ -21,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return Collections.singletonList(new SimpleGrantedAuthority(role.getRoleName()));
+        return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
     @Override

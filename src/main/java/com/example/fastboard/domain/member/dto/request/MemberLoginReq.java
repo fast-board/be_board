@@ -1,5 +1,6 @@
 package com.example.fastboard.domain.member.dto.request;
 
+import com.example.fastboard.domain.member.dto.parameter.MemberLoginParam;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -14,4 +15,9 @@ public class MemberLoginReq {
 
     @NotNull(message = "비밀번호를 입력해주세요.")
     private String password;
+
+
+    public MemberLoginParam toMemberLoginParam() {
+        return new MemberLoginParam(this.email, this.password);
+    }
 }

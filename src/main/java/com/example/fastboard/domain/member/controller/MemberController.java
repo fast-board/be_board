@@ -3,23 +3,26 @@ package com.example.fastboard.domain.member.controller;
 import com.example.fastboard.domain.member.dto.parameter.MemberSaveParam;
 import com.example.fastboard.domain.member.dto.request.MemberLoginReq;
 import com.example.fastboard.domain.member.dto.request.MemberSaveReq;
+import com.example.fastboard.domain.member.dto.response.MemberLoginRes;
 import com.example.fastboard.domain.member.dto.response.MemberSaveRes;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.service.MemberLoginService;
 import com.example.fastboard.domain.member.service.MemberSaveService;
 import com.example.fastboard.global.common.response.ApiResponse;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberSaveService memberSaveService;
@@ -34,8 +37,16 @@ public class MemberController {
         return new ResponseEntity<>(new ApiResponse<>(HttpStatus.CREATED.value(), "회원가입에 성공하였습니다." ,memberSaveRes),HttpStatus.CREATED);
     }
 
-    @PostMapping("login")
-    public void loginMember(@RequestBody @Valid MemberLoginReq memberLoginReq) {
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<MemberLoginRes>> loginMember(@RequestBody @Valid MemberLoginReq memberLoginReq) {
+        String token = memberLoginService.loginMember(memberLoginReq.toMemberLoginParam());
 
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "로그인 되었습니다.", new MemberLoginRes(token)));
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("UserName = {} ", userDetails.getUsername());
     }
 }
