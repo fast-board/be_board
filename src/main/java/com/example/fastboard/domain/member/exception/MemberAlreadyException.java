@@ -8,4 +8,8 @@ public class MemberAlreadyException extends ApplicationException {
     public MemberAlreadyException(ErrorCode errorCode){
         super(errorCode);
     }
+
+    public MemberAlreadyException(ErrorCode errorCode,Object data){
+        super(errorCode,data);
+    }
 }

@@ -8,10 +8,12 @@ import lombok.Getter;
 public class ApplicationException extends RuntimeException{
 
     private final ErrorCode errorCode;
+    private final Object data;
 
-    protected ApplicationException(ErrorCode errorCode,String message){
-        super(message);
+    protected ApplicationException(ErrorCode errorCode){
+        super(errorCode.getMessage());
         this.errorCode=errorCode;
+        this.data=null;
     }
 
     @Override

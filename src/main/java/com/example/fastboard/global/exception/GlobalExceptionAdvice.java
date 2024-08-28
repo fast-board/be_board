@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionAdvice {
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ResponseDTO<Void>> applicationException(ApplicationException e) {
+    public ResponseEntity<ResponseDTO<Object>> applicationException(ApplicationException e) {
         log.error("정의된 에러 : " + e.getErrorCode().getMessage(), e);
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())
-                .body(ResponseDTO.error(e.getErrorCode()));
+                .body(ResponseDTO.errorWithMessageAndData(HttpStatus.BAD_REQUEST,e.getMessage(),e.getData()));
     }
 
     /**
