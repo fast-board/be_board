@@ -49,4 +49,12 @@ public class MemberService {
         }
         return true;
     }
+
+    public Member findActiveMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND_EXCEPTION));
+        if (member.isDelete()) {
+            throw new MemberNotFoundException(ErrorCode.MEMBER_DELETED_EXCEPTION);
+        }
+        return member;
+    }
 }
