@@ -15,6 +15,12 @@ spring:
     console:
       enabled: true
 
+jwt:
+  secret: XUKemfiZfrEWLtykdkjfeliwjfd59YLt5XXXkAdqZu33
+  token:
+    access-expiration-time: 1800000    # 30분
+    refresh-expiration-time: 604800000   # 7일
+
 server:
   port: 8080
 
