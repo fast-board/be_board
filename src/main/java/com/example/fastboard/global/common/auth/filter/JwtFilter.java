@@ -5,6 +5,7 @@ import com.example.fastboard.global.common.auth.exception.AuthErrorCode;
 import com.example.fastboard.global.common.auth.exception.AuthException;
 import com.example.fastboard.global.common.auth.service.JwtService;
 import com.example.fastboard.global.common.auth.service.MemberDetailsService;
+import com.example.fastboard.global.common.config.URIConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,18 +27,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final MemberDetailsService memberDetailsService;
     private final JwtService jwtService;
+    private final URIConfig uriConfig;
 
-    // 토큰의 유효성을 검사하지 않아도 되는 URL.
-    private final static List<String> PERMITTED_URIS = Arrays.asList(
-            "/api/members/login",
-            "/api/members/join"
-    );
+
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (PERMITTED_URIS.contains(request.getRequestURI())) {
+        if (!uriConfig.isNeedAuthentication(request.getRequestURI(), request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }

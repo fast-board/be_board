@@ -52,7 +52,7 @@ public class JwtService {
     public boolean validateToken(String token) {
         try {
             Claims claims = getClaims(token);
-            return claims.getExpiration().before(new Date());
+            return claims.getExpiration().after(new Date());
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());

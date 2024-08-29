@@ -24,6 +24,7 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (AuthException e) {
+            e.printStackTrace();
             // 예외처리 응답.
             ErrorCode errorCode = e.getErrorCode();
             String message = errorCode.getMessage();
