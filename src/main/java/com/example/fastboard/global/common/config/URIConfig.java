@@ -10,7 +10,8 @@ public class URIConfig {
 
     public static final List<String> POST_PERMITTED_URIS = Arrays.asList(
             "/api/members/login",
-            "/api/members/join"
+            "/api/members/join",
+            "/api/members/reissue"
     );
 
     public static final List<String> GET_PERMITTED_URIS = Arrays.asList(

@@ -1,10 +1,11 @@
 package com.example.fastboard.domain.member.service;
 
 import com.example.fastboard.domain.member.dto.parameter.MemberLoginParam;
+import com.example.fastboard.domain.member.dto.response.MemberLoginRes;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.entity.Role;
 import com.example.fastboard.domain.member.repository.MemberRepository;
-import com.example.fastboard.global.common.auth.service.JwtService;
+import com.example.fastboard.global.common.auth.service.TokenService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,9 +37,7 @@ public class MemberLoginTests {
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Spy
-    JwtService jwtService = new JwtService("SecretKeySizeMustHaveSizeBigger256BitsSoSecretKeyLengthLongForUnitTest");
-
-
+    TokenService tokenService = new TokenService("SecretKeySizeMustHaveSizeBigger256BitsSoSecretKeyLengthLongForUnitTest", null, null);
 
     public MemberLoginParam memberLoginParam() {
         return MemberLoginParam.builder()
@@ -68,11 +67,11 @@ public class MemberLoginTests {
         when(memberRepository.findByEmail(any(String.class))).thenReturn(Optional.ofNullable(member));
 
         // when
-        String token = memberLoginService.loginMember(memberLoginParam);
+        MemberLoginRes token = memberLoginService.loginMember(memberLoginParam);
 
         // then
-        Assertions.assertEquals(jwtService.getMemberId(token), member.getId());
-        Assertions.assertEquals(jwtService.getRole(token), member.getRole().getRoleName());
+        Assertions.assertEquals(tokenService.getMemberId(token.getAccess_token()), member.getId());
+        Assertions.assertEquals(tokenService.getRole(token.getAccess_token()), member.getRole().getRoleName());
     }
 
     @Test

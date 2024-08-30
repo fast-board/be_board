@@ -1,9 +1,9 @@
 package com.example.fastboard.global.common.auth.filter;
 
-import com.example.fastboard.domain.member.entity.Role;
+import com.example.fastboard.global.common.auth.RefreshToken;
 import com.example.fastboard.global.common.auth.exception.AuthErrorCode;
 import com.example.fastboard.global.common.auth.exception.AuthException;
-import com.example.fastboard.global.common.auth.service.JwtService;
+import com.example.fastboard.global.common.auth.service.TokenService;
 import com.example.fastboard.global.common.auth.service.MemberDetailsService;
 import com.example.fastboard.global.common.config.URIConfig;
 import jakarta.servlet.FilterChain;
@@ -18,15 +18,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private final MemberDetailsService memberDetailsService;
-    private final JwtService jwtService;
+    private final TokenService tokenService;
     private final URIConfig uriConfig;
 
 
@@ -42,12 +41,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = getToken(request);
 
-        if (!jwtService.validateToken(token)) { // 토큰이 유효하지 않은 경우.
+        if (!tokenService.validateToken(token)) { // 토큰이 유효하지 않은 경우.
+            // Refresh Token 이 존재하는 경우.
             throw new AuthException(AuthErrorCode.IS_NOT_VALID_TOKEN);
         }
 
-        Long userId = jwtService.getMemberId(token);
-        String role = jwtService.getRole(token);
+        Long userId = tokenService.getMemberId(token);
+        String role = tokenService.getRole(token);
 
         UserDetails userDetails = memberDetailsService.loadUserByUsernameWithRole(userId, role);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
@@ -64,5 +64,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         else
             return null;
+    }
+
+    protected String getRefreshToken(HttpServletRequest request) {
+        String token = request.getHeader("Refresh-Token");
+        return token;
     }
 }

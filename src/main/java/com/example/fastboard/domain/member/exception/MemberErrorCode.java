@@ -8,7 +8,8 @@ public enum MemberErrorCode implements ErrorCode {
     PHONE_NUMBER_ALREADY_EXISTS("이미 등록된 번호입니다.", HttpStatus.BAD_REQUEST),
     EMAIL_ALREADY_EXISTS("이미 사용 중인 이메일입니다.", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_FOUND("이메일이 일치하지 않습니다.", HttpStatus.NOT_FOUND),
-    PASSWORD_NOT_EQUAL("비밀번호가 일치하지 않습니다", HttpStatus.NOT_FOUND);
+    PASSWORD_NOT_EQUAL("비밀번호가 일치하지 않습니다", HttpStatus.NOT_FOUND),
+    MEMBER_NOT_FOUND("회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String message;
     private final HttpStatus status;

@@ -25,6 +25,7 @@ server:
 
 jwt:
   secret : SecretKeySizeMustHaveSizeBigger256BitsSoSecretKeyLengthLong
+  refreshSecret: ReFreshSecretKeySizeMustHaveSizeBigger256BitsSoSecretKeyLengthLong
 
 
 

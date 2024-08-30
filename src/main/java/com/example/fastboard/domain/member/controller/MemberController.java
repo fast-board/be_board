@@ -39,10 +39,15 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<MemberLoginRes>> loginMember(@RequestBody @Valid MemberLoginReq memberLoginReq) {
-        String token = memberLoginService.loginMember(memberLoginReq.toMemberLoginParam());
-
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "로그인 되었습니다.", new MemberLoginRes(token)));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "로그인 되었습니다.", memberLoginService.loginMember(memberLoginReq.toMemberLoginParam())));
     }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<MemberLoginRes>> reissueToken(@RequestBody String refreshToken) {
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),null, memberLoginService.reissue(refreshToken)));
+    }
+
+
 
     @GetMapping("/test")
     public void test() {
