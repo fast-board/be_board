@@ -23,12 +23,12 @@ import java.util.UUID;
 
 @Component
 @Slf4j
-public class JwtTokenProvider {
+public class JwtProvider {
 
     private final Key key;
     private final Long accessTokenValidityMs;
 
-    public JwtTokenProvider(
+    public JwtProvider(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.token.access-expiration-time}") Long accessTokenValidityS
     ) {

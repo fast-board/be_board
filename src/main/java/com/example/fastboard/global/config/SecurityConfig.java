@@ -2,7 +2,7 @@ package com.example.fastboard.global.config;
 
 import com.example.fastboard.global.config.jwt.JwtAuthenticationFilter;
 import com.example.fastboard.global.config.jwt.JwtExceptionFilter;
-import com.example.fastboard.global.config.jwt.JwtTokenProvider;
+import com.example.fastboard.global.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtTokenProvider;
     public static final String[] ALLOWED_PATHS = {
             "/h2-console/**",
             "/boards",

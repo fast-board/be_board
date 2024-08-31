@@ -6,7 +6,7 @@ import com.example.fastboard.domain.member.dto.request.RefreshTokenRequest;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.entity.Token;
 import com.example.fastboard.domain.member.exception.InvalidPasswordException;
-import com.example.fastboard.global.config.jwt.JwtTokenProvider;
+import com.example.fastboard.global.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtTokenProvider;
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;

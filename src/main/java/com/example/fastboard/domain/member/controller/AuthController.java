@@ -31,4 +31,11 @@ public class AuthController {
         return ResponseEntity.ok()
                 .body(ResponseDTO.okWithData(authService.reissueAccessToken(request)));
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<ResponseDTO<Void>> test(Principal id){
+        String name = id.getName();
+        System.out.println(name);
+        return ResponseEntity.ok().body(ResponseDTO.ok());
+    }
 }
