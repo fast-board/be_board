@@ -1,6 +1,7 @@
 package com.example.fastboard.global.exception;
 
 import com.example.fastboard.global.common.ResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -53,11 +54,14 @@ public class GlobalExceptionAdvice {
                 .body(ResponseDTO.errorWithMessage(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ResponseDTO<Void>> serverException(RuntimeException e) {
-        log.error("정의되지 않은 에러 : " + e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseDTO<Void>> unhandledException(Exception e, HttpServletRequest request) {
+        log.error("정의되지 않은 에러 : {} {} errMessage={}\n",
+                request.getMethod(),
+                request.getRequestURI(),
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ResponseDTO.errorWithMessage(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
 }
