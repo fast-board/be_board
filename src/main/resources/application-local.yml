@@ -15,11 +15,17 @@ spring:
     console:
       enabled: true
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+
 jwt:
   secret: XUKemfiZfrEWLtykdkjfeliwjfd59YLt5XXXkAdqZu33
   token:
-    access-expiration-time: 1800000    # 30분
-    refresh-expiration-time: 604800000   # 7일
+    access-expiration-time: 60000    # 1분
+    refresh-expiration-time: 180000   # 3분
 
 server:
   port: 8080
