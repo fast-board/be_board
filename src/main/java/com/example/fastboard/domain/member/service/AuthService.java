@@ -1,8 +1,10 @@
 package com.example.fastboard.domain.member.service;
 
-import com.example.fastboard.domain.member.dto.TokenDto;
+import com.example.fastboard.domain.member.dto.response.TokenResponse;
 import com.example.fastboard.domain.member.dto.request.MemberLoginRequest;
+import com.example.fastboard.domain.member.dto.request.RefreshTokenRequest;
 import com.example.fastboard.domain.member.entity.Member;
+import com.example.fastboard.domain.member.entity.Token;
 import com.example.fastboard.domain.member.exception.InvalidPasswordException;
 import com.example.fastboard.global.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,39 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
-    @Transactional(readOnly = true)
-    public TokenDto login(MemberLoginRequest request) {
+    public TokenResponse login(MemberLoginRequest request) {
         Member member = memberService.findActiveMemberByEmail(request.email());
         if (!passwordEncoder.matches(request.password(), member.getEncryptedPassword())) {
             throw new InvalidPasswordException();
         }
 
-        return jwtTokenProvider.generateToken(member);
+        String accessToken = jwtTokenProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        refreshTokenService.saveTokenInfo(member.getId(), refreshToken, accessToken);
+        return TokenResponse.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public TokenResponse reissueAccessToken(RefreshTokenRequest request) {
+        String refreshToken = request.refreshToken();
+        Member member = refreshTokenService.getMemberFromRefreshToken(refreshToken);
+        Token token = refreshTokenService.findTokenByRefreshToken(refreshToken);
+        String oldAccessToken = token.getAccessToken();
+
+        // 이전에 발급된 액세스 토큰이 만료가 되어야 새로운 액세스 토큰 발급
+        jwtTokenProvider.checkExpiredToken(oldAccessToken);
+
+        String newAccessToken = jwtTokenProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
+        token.setAccessToken(newAccessToken);
+        refreshTokenService.updateToken(token);
+        return TokenResponse.builder()
+                .accessToken(newAccessToken)
+                .build();
     }
 }
