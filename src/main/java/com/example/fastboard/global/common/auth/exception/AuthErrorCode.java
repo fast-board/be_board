@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 public enum AuthErrorCode implements ErrorCode {
 
     IS_NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다. (로그인이 필요합니다.)"),
+    IS_NOT_VALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "리프레쉬 토큰이 유효하지 않습니다."),
     IS_NOT_VALID_AUTHORIZE(HttpStatus.FORBIDDEN, "해당 권한이 존재하지 않습니다.");
 
     private HttpStatus status;

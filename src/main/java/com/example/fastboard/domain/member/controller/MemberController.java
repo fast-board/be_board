@@ -2,6 +2,7 @@ package com.example.fastboard.domain.member.controller;
 
 import com.example.fastboard.domain.member.dto.parameter.MemberSaveParam;
 import com.example.fastboard.domain.member.dto.request.MemberLoginReq;
+import com.example.fastboard.domain.member.dto.request.MemberReissueReq;
 import com.example.fastboard.domain.member.dto.request.MemberSaveReq;
 import com.example.fastboard.domain.member.dto.response.MemberLoginRes;
 import com.example.fastboard.domain.member.dto.response.MemberSaveRes;
@@ -43,8 +44,8 @@ public class MemberController {
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<ApiResponse<MemberLoginRes>> reissueToken(@RequestBody String refreshToken) {
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),null, memberLoginService.reissue(refreshToken)));
+    public ResponseEntity<ApiResponse<MemberLoginRes>> reissueToken(@RequestBody MemberReissueReq refreshToken) {
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),null, memberLoginService.reissue(refreshToken.refreshToken())));
     }
 
 

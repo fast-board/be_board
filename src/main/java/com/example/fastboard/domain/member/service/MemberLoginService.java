@@ -35,7 +35,7 @@ public class MemberLoginService {
     }
 
     public MemberLoginRes reissue(String refreshToken) {
-        if(!tokenService.validateRefreshToken(refreshToken)) throw new AuthException(AuthErrorCode.IS_NOT_VALID_TOKEN);
+        if(!tokenService.validateRefreshToken(refreshToken)) throw new AuthException(AuthErrorCode.IS_NOT_VALID_REFRESH_TOKEN);
 
         Long memberId = tokenService.getMemberIdFromRefreshToken(refreshToken);
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));

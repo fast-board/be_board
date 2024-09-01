@@ -74,7 +74,10 @@ public class TokenService {
             Long memberId = claims.get("memberId", Long.class);
             RefreshToken dto = tokenRepository.findById(memberId).orElseThrow(() -> new RuntimeException());
 
-            if (memberId == dto.getUserId()) return true;
+            log.info("refresh Token : {}", refreshToken);
+            log.info("Redis Refresh Token : {}", dto.getRefreshToken());
+
+            if (memberId == dto.getUserId() && refreshToken.equals(dto.getRefreshToken())) return true;
 
             return false;
         } catch (Exception e) {
