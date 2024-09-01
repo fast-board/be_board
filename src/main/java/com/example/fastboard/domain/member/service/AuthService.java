@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService {
 
-    private final JwtProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
@@ -28,8 +28,8 @@ public class AuthService {
             throw new InvalidPasswordException();
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String accessToken = jwtProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
+        String refreshToken = jwtProvider.createRefreshToken();
 
         refreshTokenService.saveTokenInfo(member.getId(), refreshToken, accessToken);
         return TokenResponse.builder()
@@ -46,9 +46,9 @@ public class AuthService {
         String oldAccessToken = token.getAccessToken();
 
         // 이전에 발급된 액세스 토큰이 만료가 되어야 새로운 액세스 토큰 발급
-        jwtTokenProvider.checkExpiredToken(oldAccessToken);
+        jwtProvider.checkExpiredToken(oldAccessToken);
 
-        String newAccessToken = jwtTokenProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
+        String newAccessToken = jwtProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
         token.setAccessToken(newAccessToken);
         refreshTokenService.updateToken(token);
         return TokenResponse.builder()
