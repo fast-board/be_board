@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, uriConfig.POST_PERMITTED_URIS.toArray(new String[0])).permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.GET, uriConfig.GET_PERMITTED_URIS.toArray(new String[0])).permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/members/test").hasRole("ADMIN"))
-                .authorizeHttpRequests(request -> request.anyRequest().authenticated()) // 이외에 권한은 로그인이 필요하다.
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll()) // 이외에 권한은 로그인이 필요하다.
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionHandlerFilter, jwtFilter.getClass())

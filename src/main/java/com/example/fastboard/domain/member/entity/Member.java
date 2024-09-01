@@ -6,12 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE member SET deleted_at = now() WHERE id = ?")
+@Where(clause = "deleted_at is null")
 public class Member extends BaseEntitySoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
