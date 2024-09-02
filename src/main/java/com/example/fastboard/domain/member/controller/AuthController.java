@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/members")
 @RequiredArgsConstructor
+@RequestMapping("/members")
 public class AuthController {
 
     private final AuthService authService;
@@ -39,3 +39,4 @@ public class AuthController {
         return ResponseEntity.ok().body(ResponseDTO.ok());
     }
 }
+
