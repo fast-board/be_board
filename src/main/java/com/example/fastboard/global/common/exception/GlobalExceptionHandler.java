@@ -1,6 +1,7 @@
 package com.example.fastboard.global.common.exception;
 
 import com.example.fastboard.domain.member.exception.MemberException;
+import com.example.fastboard.global.common.auth.exception.AuthException;
 import com.example.fastboard.global.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ApiResponse> handleMemberException(MemberException e) {
-        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getData());
+        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getErrorInfo());
+        return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ApiResponse> handleAuthException(AuthException e) {
+        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getErrorInfo());
         return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
     }
 

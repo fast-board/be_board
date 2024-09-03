@@ -1,17 +1,17 @@
 package com.example.fastboard.domain.member.service;
 
+import com.example.fastboard.domain.member.dto.parameter.MemberLoginParam;
 import com.example.fastboard.domain.member.dto.parameter.MemberSaveParam;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.entity.Role;
 import com.example.fastboard.domain.member.exception.MemberErrorCode;
 import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.domain.member.repository.MemberRepository;
+import com.example.fastboard.global.common.auth.service.MemberDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +20,7 @@ public class MemberSaveService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberDetailsService customUserDetailsService;
 
 
     public Member addMember(MemberSaveParam memberSaveParam) {
@@ -49,6 +50,9 @@ public class MemberSaveService {
                 .build();
 
         return memberRepository.save(member);
+    }
 
+    public String loginMember(MemberLoginParam memberLoginParam) {
+        return null;
     }
 }
