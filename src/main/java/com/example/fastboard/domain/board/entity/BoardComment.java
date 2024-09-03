@@ -1,7 +1,7 @@
 package com.example.fastboard.domain.board.entity;
 
 import com.example.fastboard.domain.member.entity.Member;
-import com.example.fastboard.global.common.BaseEntitySoftDelete;
+import com.example.fastboard.global.common.entity.BaseEntitySoftDelete;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
