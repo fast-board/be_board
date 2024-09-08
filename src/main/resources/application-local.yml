@@ -24,8 +24,8 @@ spring:
 jwt:
   secret: XUKemfiZfrEWLtykdkjfeliwjfd59YLt5XXXkAdqZu33
   token:
-    access-expiration-time: 60000    # 1분
-    refresh-expiration-time: 180000   # 3분
+    access-expiration-time: 180000    # 3분
+    refresh-expiration-time: 6000000   # 10분
 
 server:
   port: 8080
