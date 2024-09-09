@@ -5,8 +5,10 @@ import com.example.fastboard.domain.member.dto.request.MemberLoginRequest;
 import com.example.fastboard.domain.member.dto.request.RefreshTokenRequest;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.entity.Token;
+import com.example.fastboard.domain.member.exception.AuthException;
 import com.example.fastboard.domain.member.exception.InvalidPasswordException;
 import com.example.fastboard.global.config.jwt.JwtProvider;
+import com.example.fastboard.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,9 @@ public class AuthService {
         String oldAccessToken = token.getAccessToken();
 
         // 이전에 발급된 액세스 토큰이 만료가 되어야 새로운 액세스 토큰 발급
-        jwtProvider.checkExpiredToken(oldAccessToken);
+        if(!jwtProvider.isExpiredToken(oldAccessToken)){
+            throw new AuthException(ErrorCode.NOT_EXPIRED_TOKEN_EXCEPTION);
+        }
 
         String newAccessToken = jwtProvider.createAccessToken(member.getId(),member.getRole().getRoleName());
         token.setAccessToken(newAccessToken);

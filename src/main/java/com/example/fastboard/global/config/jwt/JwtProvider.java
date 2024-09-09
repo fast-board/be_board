@@ -76,36 +76,21 @@ public class JwtProvider {
                     .build()
                     .parseClaimsJws(accessToken)
                     .getBody();
-        } catch (ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_TOKEN_EXCEPTION);
-        }
-    }
-
-    public boolean isValidateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.error("잘못된 JWT 서명입니다. (구조적 문제)");
-            throw new AuthException(ErrorCode.INVALID_TOKEN_SIGNATURE_EXCEPTION);
+            log.warn("잘못된 JWT 서명입니다. (구조적 문제)");
+            throw  new AuthException(ErrorCode.INVALID_TOKEN_SIGNATURE_EXCEPTION);
         } catch (ExpiredJwtException e) {
-            log.error("만료된 JWT 토큰입니다.");
+            log.warn("만료된 JWT 토큰입니다.");
             throw new AuthException(ErrorCode.EXPIRED_TOKEN_EXCEPTION);
-        } catch (UnsupportedJwtException e) {
-            log.error("지원되지 않는 JWT 형식 입니다.");
-            throw new AuthException(ErrorCode.UNSUPPORTED_TOKEN_EXCEPTION);
-        } catch (IllegalArgumentException e) {
-            log.error("JWT 토큰이 Null이거나 비어있습니다.");
-            throw new AuthException(ErrorCode.ILLEGAL_TOKEN_EXCEPTION);
         }
     }
 
-    public void checkExpiredToken(String token){
+    public boolean isExpiredToken(String token){
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         }catch (ExpiredJwtException e){
-            return;
+            return true;
         }
-        throw new AuthException(ErrorCode.NOT_EXPIRED_TOKEN_EXCEPTION);
+        return false;
     }
 }
