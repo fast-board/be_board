@@ -1,4 +1,4 @@
-package com.example.fastboard.global.common;
+package com.example.fastboard.global.common.entity;
 
 import jakarta.persistence.MappedSuperclass;
 
