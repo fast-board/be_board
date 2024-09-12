@@ -3,12 +3,12 @@ package com.example.fastboard.domain.member.service;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.entity.Role;
 import com.example.fastboard.global.common.auth.service.TokenService;
+import com.example.fastboard.global.common.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,9 +19,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(SecurityConfig.class)
 public class MemberSecurityTest {
 
-    private static final Logger log = LoggerFactory.getLogger(MemberSecurityTest.class);
     @Autowired
     MockMvc mockMvc;
 
