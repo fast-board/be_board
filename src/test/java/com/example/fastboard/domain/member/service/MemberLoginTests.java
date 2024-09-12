@@ -48,7 +48,6 @@ public class MemberLoginTests {
 
     public Member member() {
         return Member.builder()
-                .id(1L)
                 .name("TestName")
                 .email("TestEmail@email.com")
                 .nickname("TestNickname")
