@@ -17,10 +17,10 @@ public class MemberSaveParam {
     private String password;
 
     public MemberSaveParam(MemberSaveReq memberSaveReq) {
-        this.name = memberSaveReq.getName();
-        this.nickname = memberSaveReq.getNickname();
-        this.phoneNumber = memberSaveReq.getPhoneNumber();
-        this.email = memberSaveReq.getEmail();
-        this.password = memberSaveReq.getPassword();
+        this.name = memberSaveReq.name();
+        this.nickname = memberSaveReq.nickname();
+        this.phoneNumber = memberSaveReq.phoneNumber();
+        this.email = memberSaveReq.email();
+        this.password = memberSaveReq.password();
     }
 }
