@@ -2,7 +2,7 @@ package com.example.fastboard.domain.member.service;
 
 import com.example.fastboard.domain.member.dto.request.MemberCreateRequest;
 import com.example.fastboard.domain.member.entity.Member;
-import com.example.fastboard.domain.member.exception.MemberAlreadyException;
+import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -25,7 +26,8 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @InjectMocks
     private MemberService memberService;
 
@@ -70,6 +72,6 @@ public class MemberServiceTest {
 
         // when, then
         assertThatThrownBy(() -> memberService.signup(request))
-                .isInstanceOf(MemberAlreadyException.class);
+                .isInstanceOf(MemberException.class);
     }
 }
