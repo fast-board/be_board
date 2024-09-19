@@ -35,4 +35,24 @@ public class Board extends BaseEntitySoftDelete {
     private List<BoardComment> boardComments = new ArrayList<>();
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wish> wishes = new ArrayList<>();
+
+    @Builder
+    private Board(
+            String title,
+            String content,
+            Long view, Category category,
+            Member member,
+            List<BoardImage> boardImages,
+            List<BoardComment> boardComments,
+            List<Wish> wishes
+    ) {
+        this.title = title;
+        this.content = content;
+        this.view = view;
+        this.category = category;
+        this.member = member;
+        this.boardImages = boardImages;
+        this.boardComments = boardComments;
+        this.wishes = wishes;
+    }
 }
