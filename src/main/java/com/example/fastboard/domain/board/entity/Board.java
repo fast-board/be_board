@@ -4,12 +4,15 @@ import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.wish.entity.Wish;
 import com.example.fastboard.global.common.BaseEntitySoftDelete;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Board extends BaseEntitySoftDelete {
     @Id
@@ -21,6 +24,8 @@ public class Board extends BaseEntitySoftDelete {
     private String content;
     @Column(nullable = false)
     private Long view;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
