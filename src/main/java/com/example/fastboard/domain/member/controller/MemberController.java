@@ -33,7 +33,7 @@ public class MemberController {
     @PostMapping("/join")
     public ResponseEntity<ApiResponse<MemberSaveRes>> addMember(@RequestBody @Valid MemberSaveReq memberSaveReq) {
         Member member = memberSaveService.addMember(new MemberSaveParam(memberSaveReq));
-        MemberSaveRes memberSaveRes = new MemberSaveRes(member);
+        MemberSaveRes memberSaveRes = MemberSaveRes.of(member);
 
         return new ResponseEntity<>(new ApiResponse<>(HttpStatus.CREATED.value(), "회원가입에 성공하였습니다." ,memberSaveRes),HttpStatus.CREATED);
     }

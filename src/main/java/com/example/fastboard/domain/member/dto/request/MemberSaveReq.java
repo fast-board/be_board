@@ -6,23 +6,21 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-public class MemberSaveReq {
-    @Email(message = "이메일 형식을 지켜주세요.")
-    @NotNull(message = "이메일을 입력해주세요.")
-    private String email;
+public record MemberSaveReq(
 
-    @NotBlank(message = "이름을 입력해주세요.")
-    @NotNull(message = "이름을 입력해주세요.")
-    private String name;
+        @Email(message = "이메일 형식을 지켜주세요.")
+        @NotNull(message = "이메일을 입력해주세요.")
+        String email,
 
-    @NotBlank(message = "비밀번호를 입력해주세요.")
-    @NotNull(message = "비밀번호를 입력해주세요.")
-    private String password;
+        @NotBlank(message = "이름을 입력해주세요.")
+        @NotNull(message = "이름을 입력해주세요.")
+        String name,
 
-    private String nickname;
+        @NotBlank(message = "비밀번호를 입력해주세요.")
+        @NotNull(message = "비밀번호를 입력해주세요.")
+        String password,
 
-    private String phoneNumber;
+        String nickname,
 
-}
+        String phoneNumber
+) {}

@@ -51,7 +51,6 @@ public class MemberSaveTests {
 
         // given
         Member member = Member.builder()
-                .id(1L)
                 .name("TestName")
                 .email("TestEmail@email.com")
                 .nickname("TestNickname")
@@ -74,7 +73,6 @@ public class MemberSaveTests {
         Member savedMember = memberSaveService.addMember(memberSaveParam);
 
         // then
-        Assertions.assertNotNull(savedMember.getId());
         Assertions.assertEquals(member.getName(), savedMember.getName());
         Assertions.assertEquals(member.getEmail(), savedMember.getEmail());
         Assertions.assertEquals(member.getNickname(), savedMember.getNickname());
@@ -89,7 +87,6 @@ public class MemberSaveTests {
         // given
         MemberSaveParam memberSaveParam = memberSaveParam();
         Member member = Member.builder()
-                .id(1L)
                 .name(memberSaveParam.getName())
                 .email(memberSaveParam.getEmail())
                 .nickname(memberSaveParam.getNickname() + "salt")
@@ -114,7 +111,6 @@ public class MemberSaveTests {
         // given
         MemberSaveParam memberSaveParam = memberSaveParam();
         Member member = Member.builder()
-                .id(1L)
                 .name(memberSaveParam.getName())
                 .email(memberSaveParam.getEmail() + "salt")
                 .nickname(memberSaveParam.getNickname())
@@ -138,7 +134,6 @@ public class MemberSaveTests {
         // given
         MemberSaveParam memberSaveParam = memberSaveParam();
         Member member = Member.builder()
-                .id(1L)
                 .name(memberSaveParam.getName())
                 .email(memberSaveParam.getEmail() + "salt")
                 .nickname(memberSaveParam.getNickname() + "salt")

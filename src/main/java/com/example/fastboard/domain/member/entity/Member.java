@@ -39,6 +39,17 @@ public class Member extends BaseEntitySoftDelete {
     private Role role;
 
     @Builder
+    public Member(Long id, String name, String nickname, String phoneNumber, String email, String encryptedPassword, Role role) {
+        this.id = id;
+        this.name = name;
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.encryptedPassword = encryptedPassword;
+        this.role = role;
+    }
+
+    @Builder
     public Member(String name, String nickname, String phoneNumber, String email, String encryptedPassword, Role role) {
         this.name = name;
         this.nickname = nickname;
