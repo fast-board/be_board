@@ -26,18 +26,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = extractToken(request);
 
         if (!urlPermissionChecker.isNeedAuthentication(request.getRequestURI(), request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 토큰 유효성 검사 및 인증 객체 저장
-        if (StringUtils.hasText(accessToken)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        String accessToken = extractToken(request);
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
@@ -52,8 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return token;
             }
             throw new AuthException(ErrorCode.AUTHORIZATION_HEADER_MUST_START_BEARER_EXCEPTION);
+        } else {
+            throw new AuthException(ErrorCode.UNAUTHORIZATION_EXCEPTION);
         }
-        return null;
     }
 
     private void validateExtractToken(String extractToken) {
