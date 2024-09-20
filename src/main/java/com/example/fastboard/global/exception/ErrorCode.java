@@ -30,6 +30,14 @@ public enum ErrorCode {
     TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST,"권한정보가 없는 토큰 입니다."),
     REFRESHTOKEN_NOT_FOUND(HttpStatus.NOT_FOUND,"refreshToken이 존재하지 않습니다."),
 
+    //FILE
+    FILE_IS_EMPTY_EXCEPTION(HttpStatus.BAD_REQUEST,"파일이 존재하지 않습니다."),
+    FILE_SIZE_LIMIT_EXCEPTION(HttpStatus.BAD_REQUEST,"파일 용량이 10MB를 초과할 수 없습니다." ),
+    FILE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"이미 동일한 디렉토리 또는 파일 존재"),
+    PATH_NOT_FOUND(HttpStatus.BAD_REQUEST, "(Path)경로가 존재하지 않습니다."),
+    FILE_ORIGINAL_NAME_IS_EMPTY_EXCEPTION(HttpStatus.BAD_REQUEST,"원본 파일 이름이 NULL입니다."),
+    FILE_IOEXCEPTION(HttpStatus.BAD_REQUEST,"알 수 없는 이유로 처리에 실패 하였습니다."),
+
     //500 error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러");
 
