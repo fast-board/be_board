@@ -28,5 +28,8 @@ jwt:
   secret : SecretKeySizeMustHaveSizeBigger256BitsSoSecretKeyLengthLong
   refreshSecret: ReFreshSecretKeySizeMustHaveSizeBigger256BitsSoSecretKeyLengthLong
 
+image:
+  path : /Users/gongtaehyeon/image/
+
 
 
