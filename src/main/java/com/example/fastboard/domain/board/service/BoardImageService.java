@@ -45,7 +45,13 @@ public class BoardImageService {
         Path filePath = Paths.get(uploadDirectory + File.separator + uniqueFileName);
         createDirectoryIfNotExists(filePath.getParent());
         saveFile(file, filePath);
-        saveBoardImage(originalFileName, uniqueFileName);  // BoardImage 저장
+
+        BoardImage boardImage = BoardImage.builder()
+                .originalName(originalFileName)
+                .saveName(uniqueFileName)
+                .build();
+        boardImageRepository.save(boardImage);
+
         return filePath.toString();
     }
 
@@ -75,14 +81,6 @@ public class BoardImageService {
         } catch (IOException e) {
             handleFileSystemException(e, filePath, "파일 저장");
         }
-    }
-
-    private BoardImage saveBoardImage(String originalFileName, String uniqueFileName) {
-        BoardImage boardImage = BoardImage.builder()
-                .originalName(originalFileName)
-                .saveName(uniqueFileName)
-                .build();
-        return boardImageRepository.save(boardImage);
     }
 
     private String generateUniqueFileName(String originalFileName) {
