@@ -38,6 +38,9 @@ public enum ErrorCode {
     FILE_ORIGINAL_NAME_IS_EMPTY_EXCEPTION(HttpStatus.BAD_REQUEST,"원본 파일 이름이 NULL입니다."),
     FILE_IOEXCEPTION(HttpStatus.BAD_REQUEST,"알 수 없는 이유로 처리에 실패 하였습니다."),
 
+    //BOARD_IMAGE
+    IMAGE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND,"이미지를 찾을 수 없습니다."),
+
     //500 error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러");
 
