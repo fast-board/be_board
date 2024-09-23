@@ -1,6 +1,8 @@
 package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.entity.BoardImage;
+import com.example.fastboard.domain.board.exception.BoardErrorCode;
+import com.example.fastboard.domain.board.exception.BoardException;
 import com.example.fastboard.domain.board.repository.BoardImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,8 +41,7 @@ public class BoardImagePostService {
 
             return boardImageRepository.save(boardImage);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            throw new BoardException(BoardErrorCode.IMAGE_UPLOAD_FAIL);
         }
     }
 }
