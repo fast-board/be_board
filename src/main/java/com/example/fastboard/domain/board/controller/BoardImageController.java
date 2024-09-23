@@ -4,12 +4,12 @@ import com.example.fastboard.domain.board.dto.response.BoardImageUploadRes;
 import com.example.fastboard.domain.board.entity.BoardImage;
 import com.example.fastboard.domain.board.service.BoardImageGetService;
 import com.example.fastboard.domain.board.service.BoardImagePostService;
+import com.example.fastboard.global.common.response.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class BoardImageController {
     public final BoardImageGetService boardImageGetService;
 
     @PostMapping
-    public ResponseEntity<BoardImageUploadRes> createBoardImage(@RequestParam(value = "image") MultipartFile file) {
+    public ResponseEntity<ApiResponse> createBoardImage(@RequestParam(value = "image") MultipartFile file) {
         BoardImage boardImage = boardImagePostService.upload(file);
 
         BoardImageUploadRes body = BoardImageUploadRes.builder()
@@ -39,7 +39,9 @@ public class BoardImageController {
                 .url("http://localhost:8080/api/images/" + boardImage.getId())
                 .build();
 
-        return new ResponseEntity<>(body,HttpStatus.CREATED);
+        ApiResponse apiResponse = new ApiResponse(HttpStatus.CREATED.value(),"이미지를 생성하였습니다." , body);
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/{imageId}")
