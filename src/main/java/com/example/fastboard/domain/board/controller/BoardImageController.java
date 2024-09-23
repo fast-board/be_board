@@ -33,7 +33,12 @@ public class BoardImageController {
     @PostMapping
     public ResponseEntity<BoardImageUploadRes> createBoardImage(@RequestParam(value = "image") MultipartFile file) {
         BoardImage boardImage = boardImagePostService.upload(file);
-        BoardImageUploadRes body = new BoardImageUploadRes(boardImage.getId(), "http://localhost:8080/api/images/" + boardImage.getId());
+
+        BoardImageUploadRes body = BoardImageUploadRes.builder()
+                .id(boardImage.getId())
+                .url("http://localhost:8080/api/images/" + boardImage.getId())
+                .build();
+
         return new ResponseEntity<>(body,HttpStatus.CREATED);
     }
 

@@ -42,5 +42,6 @@ public class Board extends BaseEntitySoftDelete {
         this.content = content;
         this.member = member;
         this.category = category;
+        this.view = 0L;
     }
 }

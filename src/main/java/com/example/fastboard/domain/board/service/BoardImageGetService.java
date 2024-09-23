@@ -1,6 +1,8 @@
 package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.entity.BoardImage;
+import com.example.fastboard.domain.board.exception.BoardErrorCode;
+import com.example.fastboard.domain.board.exception.BoardException;
 import com.example.fastboard.domain.board.repository.BoardImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ public class BoardImageGetService {
     private final BoardImageRepository boardImageRepository;
 
     public File getImage(Long imageId) {
-        BoardImage image = boardImageRepository.getById(imageId);
+        BoardImage image = boardImageRepository.findById(imageId).orElseThrow(() -> new BoardException(BoardErrorCode.IMAGE_NOT_FOUND));
         return new File(image.getSaveName());
     }
 }

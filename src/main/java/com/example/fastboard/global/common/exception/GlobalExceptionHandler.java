@@ -1,5 +1,6 @@
 package com.example.fastboard.global.common.exception;
 
+import com.example.fastboard.domain.board.exception.BoardException;
 import com.example.fastboard.domain.member.exception.MemberException;
 import com.example.fastboard.global.common.auth.exception.AuthException;
 import com.example.fastboard.global.common.response.ApiResponse;
@@ -15,6 +16,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<ApiResponse> handleMemberException(MemberException e) {
+        ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getErrorInfo());
+        return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
+    }
+
+    @ExceptionHandler(BoardException.class)
+    public ResponseEntity<ApiResponse> handleBoardException(BoardException e) {
         ApiResponse response = new ApiResponse(e.getErrorCode().getHttpStatus().value(), e.getMessage(), e.getErrorInfo());
         return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
     }

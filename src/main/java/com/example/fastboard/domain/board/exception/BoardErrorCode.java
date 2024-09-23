@@ -4,7 +4,8 @@ import com.example.fastboard.global.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum BoardErrorCode implements ErrorCode {
-    IMAGE_UPLOAD_FAIL("이미지 업로드에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    IMAGE_UPLOAD_FAIL("이미지 업로드에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    IMAGE_NOT_FOUND("이미지를 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
 
     private final String message;
