@@ -14,24 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtProvider jwtTokenProvider;
-    public static final String[] ALLOWED_PATHS = {
-            "/h2-console/**",
-            "/boards",
-            "/boards/search",
-            "/members/signup",
-            "/members/login",
-            "/members/reissue"
-    };
+    private final JwtProvider jwtProvider;
+    private final UrlPermissionChecker urlPermissionChecker;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,19 +39,15 @@ public class SecurityConfig {
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
 
-                .authorizeHttpRequests(authorize ->
-                        authorize
-                                .requestMatchers(
-                                        Arrays.stream(ALLOWED_PATHS)
-                                                .map(AntPathRequestMatcher::new)
-                                                .toArray(RequestMatcher[]::new)
-                                ).permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                request -> !urlPermissionChecker.isNeedAuthentication(request.getRequestURI(), request.getMethod())
+                        ).permitAll() // 인증이 필요 없는 URL은 모두 허용
+                        .anyRequest().authenticated() // 그 외의 요청은 인증 필요
                 )
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, urlPermissionChecker), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
-
                 .build();
     }
 }

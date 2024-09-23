@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum Category {
-    FIRST("카테고리 1"),
-    SECOND("카테고리 2");
+    HUMOR("유머게시판"),
+    FOOTBALL("축구게시판");
 
     private final String categoryName;
 

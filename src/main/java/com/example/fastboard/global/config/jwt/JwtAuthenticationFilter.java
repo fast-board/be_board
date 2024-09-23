@@ -1,6 +1,7 @@
 package com.example.fastboard.global.config.jwt;
 
 import com.example.fastboard.domain.member.exception.AuthException;
+import com.example.fastboard.global.config.UrlPermissionChecker;
 import com.example.fastboard.global.exception.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,21 +22,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final int START_TOKEN_INDEX = 6;
 
     private final JwtProvider jwtTokenProvider;
+    private final UrlPermissionChecker urlPermissionChecker; // 인증이 필요 없는 URL 관리 클래스
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = extractToken(request);
 
-        if (accessToken == null || accessToken.isEmpty()) {
+        if (!urlPermissionChecker.isNeedAuthentication(request.getRequestURI(), request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 토큰 유효성 검사 및 인증 객체 저장
-        if (StringUtils.hasText(accessToken) && jwtTokenProvider.isValidateToken(accessToken)) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        String accessToken = extractToken(request);
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
@@ -50,8 +49,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return token;
             }
             throw new AuthException(ErrorCode.AUTHORIZATION_HEADER_MUST_START_BEARER_EXCEPTION);
+        } else {
+            throw new AuthException(ErrorCode.UNAUTHORIZATION_EXCEPTION);
         }
-        return null;
     }
 
     private void validateExtractToken(String extractToken) {
