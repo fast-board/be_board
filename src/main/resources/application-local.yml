@@ -27,6 +27,9 @@ jwt:
     access-expiration-time: 180000    # 3분
     refresh-expiration-time: 6000000   # 10분
 
+file:
+  dir: C:\Users\ChangHoMoon\images
+
 server:
   port: 8080
 

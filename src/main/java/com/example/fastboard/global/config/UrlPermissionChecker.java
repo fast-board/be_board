@@ -31,7 +31,7 @@ public class UrlPermissionChecker {
     }
 
     public static final List<String> PERMIT_ALL_URIS = Arrays.asList(
-            "/h2-console/**"
+            "/api/h2-console/**"
     );
 
     public boolean isNeedAuthentication(String requestURI, String requestMethod) {
