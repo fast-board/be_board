@@ -29,4 +29,10 @@ public class BoardController {
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<ApiResponse> getBoard(@PathVariable Long boardId) {
+
+        return null;
+    }
 }
