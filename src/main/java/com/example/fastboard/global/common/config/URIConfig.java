@@ -22,7 +22,8 @@ public class URIConfig {
     public static final List<String> GET_PERMITTED_URIS = Arrays.asList(
             "/api/members/test2",
             "/h2-console/",
-            "/favicon.ico"
+            "/favicon.ico",
+            "/api/images/**"
     );
 
     public static final List<String> PERMIT_ALL_URIS = Arrays.asList(
@@ -43,7 +44,11 @@ public class URIConfig {
         if ("POST".equals(requestMethod)) {
             return !POST_PERMITTED_URIS.contains(requestURI);
         } else if ("GET".equals(requestMethod)) {
-            return !GET_PERMITTED_URIS.contains(requestURI);
+            for (String pattern : GET_PERMITTED_URIS) {
+                if (antPathMatcher.match(pattern, requestURI)) {
+                    return false;
+                }
+            }
         }
 
         // 다른 HTTP 메서드에 대해서는 기본적으로 인증이 필요하다고 설정

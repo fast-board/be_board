@@ -4,12 +4,15 @@ import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.wish.entity.Wish;
 import com.example.fastboard.global.common.entity.BaseEntitySoftDelete;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Board extends BaseEntitySoftDelete {
     @Id
@@ -31,4 +34,14 @@ public class Board extends BaseEntitySoftDelete {
     private List<BoardComment> boardComments = new ArrayList<>();
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wish> wishes = new ArrayList<>();
+
+
+    @Builder
+    public Board(String title, String content, Member member, Category category) {
+        this.title = title;
+        this.content = content;
+        this.member = member;
+        this.category = category;
+        this.view = 0L;
+    }
 }

@@ -20,8 +20,6 @@ public class MemberSaveService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MemberDetailsService customUserDetailsService;
-
 
     public Member addMember(MemberSaveParam memberSaveParam) {
 
@@ -50,9 +48,5 @@ public class MemberSaveService {
                 .build();
 
         return memberRepository.save(member);
-    }
-
-    public String loginMember(MemberLoginParam memberLoginParam) {
-        return null;
     }
 }
