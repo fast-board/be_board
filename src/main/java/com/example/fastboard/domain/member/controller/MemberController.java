@@ -48,8 +48,6 @@ public class MemberController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),null, memberLoginService.reissue(refreshToken.refreshToken())));
     }
 
-
-
     @GetMapping("/test")
     public void test() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

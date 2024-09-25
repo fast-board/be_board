@@ -26,7 +26,6 @@ import java.nio.file.Files;
 @RequiredArgsConstructor
 public class BoardImageController {
 
-
     public final BoardImagePostService boardImagePostService;
     public final BoardImageGetService boardImageGetService;
 
@@ -51,6 +50,7 @@ public class BoardImageController {
             return ResponseEntity.ok().header("Content-type",Files.probeContentType(image.toPath())).body(FileCopyUtils.copyToByteArray(image));
         } catch (IOException e) {
             e.printStackTrace();
+            log.error("이미지를 불러오는데 실패하였습니다.");
             return null;
         }
     }
