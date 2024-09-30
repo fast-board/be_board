@@ -1,8 +1,10 @@
 package com.example.fastboard.domain.board.controller;
 
 import com.example.fastboard.domain.board.dto.request.BoardPostReq;
+import com.example.fastboard.domain.board.dto.response.BoardGetRes;
 import com.example.fastboard.domain.board.dto.response.BoardPostRes;
 import com.example.fastboard.domain.board.entity.Board;
+import com.example.fastboard.domain.board.service.BoardGetService;
 import com.example.fastboard.domain.board.service.BoardPostService;
 import com.example.fastboard.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.security.Principal;
 public class BoardController {
 
     private final BoardPostService boardPostService;
+    private final BoardGetService boardGetService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> post(@RequestBody BoardPostReq boardPostReq, Principal principal) {
@@ -32,7 +35,17 @@ public class BoardController {
 
     @GetMapping("/{boardId}")
     public ResponseEntity<ApiResponse> getBoard(@PathVariable Long boardId) {
+        Board board = boardGetService.getBoard(boardId);
+        BoardGetRes boardGetRes = BoardGetRes.builder()
+                .id(boardId)
+                .author(board.getMember().getNickname())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .view(board.getView())
+                .authorId(board.getMember().getId())
+                .build();
 
-        return null;
+        ApiResponse response = new ApiResponse(HttpStatus.OK.value(), null, boardGetRes);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

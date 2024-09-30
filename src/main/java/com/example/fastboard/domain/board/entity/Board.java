@@ -44,4 +44,8 @@ public class Board extends BaseEntitySoftDelete {
         this.category = category;
         this.view = 0L;
     }
+
+    public void updateView(Long view) {
+        this.view = view;
+    }
 }

@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @Query("select B FROM Board B JOIN FETCH B.member")
+    @Query("select B FROM Board B JOIN FETCH B.member WHERE B.id = :id")
     Optional<Board> findById(Long id);
 }
