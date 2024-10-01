@@ -6,7 +6,12 @@ import com.example.fastboard.domain.board.exception.BoardException;
 import com.example.fastboard.domain.board.repository.ViewRedisRepository;
 import com.example.fastboard.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,5 +26,10 @@ public class BoardGetService {
 
         board.updateView(viewCount);
         return board;
+    }
+
+    public List<Board> getBoardList(int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, criteria));
+        return boardRepository.findAll(pageable).getContent();
     }
 }

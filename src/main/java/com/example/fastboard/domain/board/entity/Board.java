@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE board SET deleted_at = now() WHERE id = ?")
+@Where(clause = "deleted_at is null")
 public class Board extends BaseEntitySoftDelete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +35,18 @@ public class Board extends BaseEntitySoftDelete {
     private Member member;
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardImage> boardImages = new ArrayList<>();
+
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardComment> boardComments = new ArrayList<>();
+
+    @Formula("(select count(*) from board_comment where board_comment.parent_board_id = id)")
+    private int commentCount;
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wish> wishes = new ArrayList<>();
+
+    @Formula("(select count(*) from wish where wish.board_id = id)")
+    private int wishCount;
 
 
     @Builder
