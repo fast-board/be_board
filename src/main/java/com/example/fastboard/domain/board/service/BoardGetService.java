@@ -16,16 +16,8 @@ public class BoardGetService {
 
     public Board getBoard(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardException(BoardErrorCode.BOARD_NOT_FOUND));
-        Long viewCount = viewRedisRepository.get(board.getId());
-
         // 조회수 처리 by Redis.
-        if (viewCount == null) {
-            viewCount = viewRedisRepository.saveWithIncrement(board);
-        }
-
-        else {
-            viewCount = viewRedisRepository.updateWithIncrement(board.getId(), viewCount);
-        }
+        Long viewCount = viewRedisRepository.get(board);
 
         board.updateView(viewCount);
         return board;
