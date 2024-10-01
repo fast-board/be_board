@@ -18,7 +18,8 @@ public enum ErrorCode {
     //AUTH
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
     AUTHORIZATION_HEADER_MUST_START_BEARER_EXCEPTION(HttpStatus.BAD_REQUEST,"Authorization Header가 bearer로 시작하지 않습니다"),
-    NO_AUTHORITIES_EXCEPTION(HttpStatus.UNAUTHORIZED, "authority가 null입니다."),
+    UNAUTHORIZATION_EXCEPTION(HttpStatus.UNAUTHORIZED, "인증 정보가 필요합니다."),
+    AUTHOR_MISMATCH_EXCEPTION(HttpStatus.FORBIDDEN,"해당 게시글에 대한 수정 권한이 없습니다."),
 
     //TOKEN
     INVALID_TOKEN_SIGNATURE_EXCEPTION(HttpStatus.BAD_REQUEST,"잘못된 JWT 서명입니다. (구조적 문제)" ),
@@ -29,6 +30,11 @@ public enum ErrorCode {
     MISSING_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰이 요청 헤더에 포함되어 있지 않습니다."),
     TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST,"권한정보가 없는 토큰 입니다."),
     REFRESHTOKEN_NOT_FOUND(HttpStatus.NOT_FOUND,"refreshToken이 존재하지 않습니다."),
+
+    //BOARD
+    BOARD_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND,"게시글을 찾을 수 없습니다."),
+    BOARD_DELETED_EXCEPTION(HttpStatus.NOT_FOUND, "삭제된 게시글입니다."),
+
 
     //FILE
     FILE_IS_EMPTY_EXCEPTION(HttpStatus.BAD_REQUEST,"파일이 존재하지 않습니다."),

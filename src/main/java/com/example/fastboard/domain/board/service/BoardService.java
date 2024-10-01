@@ -1,16 +1,21 @@
 package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.dto.request.BoardCreateRequest;
+import com.example.fastboard.domain.board.dto.request.BoardUpdateRequest;
 import com.example.fastboard.domain.board.dto.response.BoardResponse;
 import com.example.fastboard.domain.board.entity.Board;
 import com.example.fastboard.domain.board.entity.BoardImage;
+import com.example.fastboard.domain.board.exception.BoardException;
 import com.example.fastboard.domain.board.repository.BoardImageRepository;
 import com.example.fastboard.domain.board.repository.BoardRepository;
 import com.example.fastboard.domain.member.entity.Member;
+import com.example.fastboard.domain.member.exception.AuthException;
 import com.example.fastboard.domain.member.service.MemberService;
+import com.example.fastboard.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,12 +28,14 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardImageRepository boardImageRepository;
     private final MemberService memberService;
 
+    @Transactional
     public Long save(BoardCreateRequest request, Long memberId) {
         Member member = memberService.findActiveMemberById(memberId);
         Board board = request.toEntity(member);
@@ -60,7 +67,8 @@ public class BoardService {
         return imagePaths;
     }
 
-    private void updateImageBoardId(String imagePath, Board board) {
+    @Transactional
+    public void updateImageBoardId(String imagePath, Board board) {
         // 파일 경로에서 uniqueFileName 추출
         String uniqueFileName = Paths.get(imagePath).getFileName().toString();
 
@@ -73,5 +81,23 @@ public class BoardService {
         } else {
             log.warn("이미지를 찾을 수 없습니다: uniqueFileName = {}", uniqueFileName);
         }
+    }
+
+    @Transactional
+    public Long update(BoardUpdateRequest request, Long memberId, Long boardId) {
+        Member member = memberService.findActiveMemberById(memberId);
+        Board existingBoard = findActiveBoardById(boardId);
+
+        if (!member.equals(existingBoard.getMember())) {
+            throw new AuthException(ErrorCode.AUTHOR_MISMATCH_EXCEPTION);
+        }
+
+        existingBoard.update(request.title(), request.content(), request.category());
+        return existingBoard.getId();
+    }
+
+    public Board findActiveBoardById(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardException(ErrorCode.BOARD_NOT_FOUND_EXCEPTION));
     }
 }

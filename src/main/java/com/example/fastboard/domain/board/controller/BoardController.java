@@ -1,6 +1,7 @@
 package com.example.fastboard.domain.board.controller;
 
 import com.example.fastboard.domain.board.dto.request.BoardCreateRequest;
+import com.example.fastboard.domain.board.dto.request.BoardUpdateRequest;
 import com.example.fastboard.domain.board.dto.response.BoardResponse;
 import com.example.fastboard.domain.board.service.BoardService;
 import com.example.fastboard.global.common.ResponseDTO;
@@ -36,5 +37,16 @@ public class BoardController {
         return ResponseEntity.ok(
                 ResponseDTO.okWithData(allList)
         );
+    }
+
+    @PutMapping("/{boardId}")
+    public ResponseEntity<ResponseDTO<Long>> update(
+            @Valid @RequestBody BoardUpdateRequest request,
+            @PathVariable Long boardId,
+            Principal principal
+    ) {
+        Long memberId = Long.valueOf(principal.getName());
+        Long updateBoardId = boardService.update(request, memberId, boardId);
+        return ResponseEntity.ok(ResponseDTO.okWithData(updateBoardId));
     }
 }

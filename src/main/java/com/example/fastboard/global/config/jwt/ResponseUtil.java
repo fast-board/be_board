@@ -10,11 +10,9 @@ import java.io.PrintWriter;
 
 public class ResponseUtil {
 
-    public static void sendResponse(HttpServletResponse response, ApplicationException e) throws IOException {
+    public static void sendResponse(HttpServletResponse response, ResponseDTO<?> responseDTO) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(e.getErrorCode().getHttpStatus().value());
-
-        ResponseDTO<Object> responseDTO = ResponseDTO.errorWithMessageAndData(e.getErrorCode().getHttpStatus(), e.getMessage(), e.getData());
+        response.setStatus(responseDTO.getStatus());
 
         PrintWriter out = response.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();

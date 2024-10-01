@@ -40,7 +40,8 @@ public class Board extends BaseEntitySoftDelete {
     private Board(
             String title,
             String content,
-            Long view, Category category,
+            Long view,
+            Category category,
             Member member,
             List<BoardImage> boardImages,
             List<BoardComment> boardComments,
@@ -54,5 +55,11 @@ public class Board extends BaseEntitySoftDelete {
         this.boardImages = boardImages;
         this.boardComments = boardComments;
         this.wishes = wishes;
+    }
+
+    public void update(String title, String content, Category category){
+        this.title=title;
+        this.content=content;
+        this.category=category;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.fastboard.global.config;
 
+import com.example.fastboard.global.config.jwt.CustomAccessDeniedHandler;
 import com.example.fastboard.global.config.jwt.JwtAuthenticationFilter;
 import com.example.fastboard.global.config.jwt.JwtExceptionFilter;
 import com.example.fastboard.global.config.jwt.JwtProvider;
@@ -39,6 +40,9 @@ public class SecurityConfig {
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
 
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(new CustomAccessDeniedHandler()))
+
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 request -> !urlPermissionChecker.isNeedAuthentication(request.getRequestURI(), request.getMethod())
@@ -46,8 +50,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 그 외의 요청은 인증 필요
                 )
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, urlPermissionChecker), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider,urlPermissionChecker), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
+
                 .build();
     }
 }
