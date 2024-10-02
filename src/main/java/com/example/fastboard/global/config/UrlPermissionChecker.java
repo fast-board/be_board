@@ -24,6 +24,7 @@ public class UrlPermissionChecker {
         ));
         PERMITTED_URIS_MAP.put("GET", Arrays.asList(
                 "/api/boards",
+                "/api/boards/search",
                 "/favicon.ico"
         ));
         PERMITTED_URIS_MAP.put("PUT", Arrays.asList());

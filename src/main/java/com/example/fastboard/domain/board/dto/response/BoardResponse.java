@@ -17,10 +17,10 @@ public record BoardResponse(
         LocalDateTime createdAt,
         Category category
 ) {
-    public static BoardResponse fromEntities(Board board, Member member) {
+    public static BoardResponse fromEntities(Board board) {
         return new BoardResponse(
                 board.getTitle(),
-                member.getEmail(),
+                board.getMember().getEmail(),
                 board.getView(),
                 (long) board.getWishes().size(),
                 board.getCreatedAt(),

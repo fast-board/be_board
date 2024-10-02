@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -49,9 +50,23 @@ public class BoardService {
         return newBoard.getId();
     }
 
+    public List<BoardResponse> getTargetBoards(String title) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        List<BoardResponse> collect = boardRepository.findByTitleContainingOrderByCreatedAtDesc(title).stream()
+                .map(BoardResponse::fromEntities)
+                .collect(Collectors.toList());
+
+        stopWatch.stop();
+        log.info("Execution time: " + stopWatch.getTotalTimeMillis() + " ms");
+
+        return collect;
+    }
+
     public List<BoardResponse> getAllBoards() {
         return boardRepository.findAllByDeletedAtIsNull().stream()
-                .map(board -> BoardResponse.fromEntities(board, board.getMember()))
+                .map(BoardResponse::fromEntities)
                 .collect(Collectors.toList());
     }
 

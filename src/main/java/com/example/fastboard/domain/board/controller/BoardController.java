@@ -31,6 +31,14 @@ public class BoardController {
         return ResponseEntity.ok(ResponseDTO.okWithData(boardId));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDTO<List<BoardResponse>>> getTargetList(
+            @RequestParam(value = "title", required = false) String title
+    ) {
+        return ResponseEntity.ok(
+                ResponseDTO.okWithData(boardService.getTargetBoards(title))
+        );
+    }
 
     @GetMapping
     public ResponseEntity<ResponseDTO<List<BoardResponse>>> getAllList() {
