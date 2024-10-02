@@ -2,6 +2,7 @@ package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.dto.request.BoardCreateRequest;
 import com.example.fastboard.domain.board.dto.request.BoardUpdateRequest;
+import com.example.fastboard.domain.board.dto.response.BoardDetailResponse;
 import com.example.fastboard.domain.board.dto.response.BoardResponse;
 import com.example.fastboard.domain.board.entity.Board;
 import com.example.fastboard.domain.board.entity.BoardImage;
@@ -97,7 +98,20 @@ public class BoardService {
     }
 
     public Board findActiveBoardById(Long boardId) {
-        return boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardException(ErrorCode.BOARD_NOT_FOUND_EXCEPTION));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardException(ErrorCode.BOARD_NOT_FOUND_EXCEPTION));
+        if (board.isDelete()) {
+            throw new BoardException(ErrorCode.BOARD_DELETED_EXCEPTION);
+        }
+        return board;
+    }
+
+    @Transactional
+    public BoardDetailResponse loadBoardDetail(Long boardId, Long memberId) {
+        memberService.findActiveMemberById(memberId);
+        Board board = findActiveBoardById(boardId);
+        if (!board.getMember().getId().equals(memberId)) {
+            board.plusViewCount();
+        }
+        return BoardDetailResponse.fromEntities(board);
     }
 }

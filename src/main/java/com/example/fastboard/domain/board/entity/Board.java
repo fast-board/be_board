@@ -62,4 +62,8 @@ public class Board extends BaseEntitySoftDelete {
         this.content=content;
         this.category=category;
     }
+
+    public void plusViewCount(){
+        this.view+=1;
+    }
 }

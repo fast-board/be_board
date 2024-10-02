@@ -3,12 +3,15 @@ package com.example.fastboard.domain.board.entity;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.global.common.BaseEntitySoftDelete;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class BoardComment extends BaseEntitySoftDelete {
     @Id
@@ -24,4 +27,13 @@ public class BoardComment extends BaseEntitySoftDelete {
     private BoardComment parentComment;     //부모 댓글
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardComment> childComments = new ArrayList<>();
+
+    @Builder
+    private BoardComment(String content, Board parentBoard, Member member, BoardComment parentComment, List<BoardComment> childComments) {
+        this.content = content;
+        this.parentBoard = parentBoard;
+        this.member = member;
+        this.parentComment = parentComment;
+        this.childComments = childComments;
+    }
 }
