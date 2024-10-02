@@ -9,7 +9,7 @@ public abstract class BaseEntitySoftDelete extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    protected void delete() {
+    public void delete() {
         deletedAt = LocalDateTime.now();
     }
 

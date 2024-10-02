@@ -114,4 +114,14 @@ public class BoardService {
         }
         return BoardDetailResponse.fromEntities(board);
     }
+
+    @Transactional
+    public void delete(Long boardId, Long memberId) {
+        Member member = memberService.findActiveMemberById(memberId);
+        Board board = findActiveBoardById(boardId);
+        if (!board.getMember().equals(member)) {
+            throw new AuthException(ErrorCode.AUTHOR_MISMATCH_EXCEPTION);
+        }
+        board.delete();
+    }
 }

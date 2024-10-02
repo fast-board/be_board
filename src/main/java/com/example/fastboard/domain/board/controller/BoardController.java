@@ -61,4 +61,14 @@ public class BoardController {
         Long updateBoardId = boardService.update(request, memberId, boardId);
         return ResponseEntity.ok(ResponseDTO.okWithData(updateBoardId));
     }
+
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<ResponseDTO<Void>> delete(
+            @PathVariable Long boardId,
+            Principal principal
+    ) {
+        Long memberId = Long.valueOf(principal.getName());
+        boardService.delete(boardId, memberId);
+        return ResponseEntity.ok(ResponseDTO.ok());
+    }
 }

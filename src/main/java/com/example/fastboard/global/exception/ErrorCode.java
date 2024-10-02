@@ -19,7 +19,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
     AUTHORIZATION_HEADER_MUST_START_BEARER_EXCEPTION(HttpStatus.BAD_REQUEST,"Authorization Header가 bearer로 시작하지 않습니다"),
     UNAUTHORIZATION_EXCEPTION(HttpStatus.UNAUTHORIZED, "인증 정보가 필요합니다."),
-    AUTHOR_MISMATCH_EXCEPTION(HttpStatus.FORBIDDEN,"해당 게시글에 대한 수정 권한이 없습니다."),
+    AUTHOR_MISMATCH_EXCEPTION(HttpStatus.FORBIDDEN,"해당 게시글에 대한 권한이 없습니다."),
 
     //TOKEN
     INVALID_TOKEN_SIGNATURE_EXCEPTION(HttpStatus.BAD_REQUEST,"잘못된 JWT 서명입니다. (구조적 문제)" ),
