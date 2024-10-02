@@ -7,11 +7,12 @@ import com.example.fastboard.domain.board.dto.response.BoardGetRes;
 import com.example.fastboard.domain.board.dto.response.BoardPageRes;
 import com.example.fastboard.domain.board.dto.response.BoardPostRes;
 import com.example.fastboard.domain.board.entity.Board;
+import com.example.fastboard.domain.board.service.BoardDeleteService;
 import com.example.fastboard.domain.board.service.BoardGetService;
 import com.example.fastboard.domain.board.service.BoardPostService;
 import com.example.fastboard.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class BoardController {
 
     private final BoardPostService boardPostService;
     private final BoardGetService boardGetService;
+    private final BoardDeleteService boardDeleteService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> post(@RequestBody BoardPostReq boardPostReq, Principal principal) {
@@ -92,8 +94,16 @@ public class BoardController {
         Board board = boardPostService.update(boardUpdateParam);
 
         BoardPostRes boardPostRes = new BoardPostRes(board.getMember().getName(), board.getId(), board.getTitle(), board.getContent());
-        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "게시글이 생성되었습니다.", boardPostRes);
+        ApiResponse response = new ApiResponse(HttpStatus.OK.value(), "게시글이 수정되었습니다..", boardPostRes);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable Long boardId, Principal principal) {
+        boardDeleteService.deleteBoard(boardId);
+        ApiResponse response = new ApiResponse(HttpStatus.NO_CONTENT.value(), "게시글이 삭제되었습니다.", null);
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+
     }
 }
