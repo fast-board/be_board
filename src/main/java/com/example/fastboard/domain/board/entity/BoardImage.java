@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@SQLDelete(sql = "UPDATE board_image SET board_id = null WHERE id = ?")
 public class BoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

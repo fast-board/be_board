@@ -1,5 +1,7 @@
 package com.example.fastboard.domain.board.controller;
 
+import com.example.fastboard.domain.board.dto.parameter.BoardPostParam;
+import com.example.fastboard.domain.board.dto.parameter.BoardUpdateParam;
 import com.example.fastboard.domain.board.dto.request.BoardPostReq;
 import com.example.fastboard.domain.board.dto.response.BoardGetRes;
 import com.example.fastboard.domain.board.dto.response.BoardPageRes;
@@ -74,5 +76,24 @@ public class BoardController {
 
         ApiResponse response = new ApiResponse(HttpStatus.OK.value(), null, boardPostResList);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{boardId}")
+    public ResponseEntity<ApiResponse> update(@PathVariable Long boardId, @RequestBody BoardPostParam boardPostParam, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        BoardUpdateParam boardUpdateParam = BoardUpdateParam.builder()
+                .boardId(boardId)
+                .category(boardPostParam.category())
+                .content(boardPostParam.content())
+                .authorId(userId)
+                .title(boardPostParam.title())
+                .build();
+
+        Board board = boardPostService.update(boardUpdateParam);
+
+        BoardPostRes boardPostRes = new BoardPostRes(board.getMember().getName(), board.getId(), board.getTitle(), board.getContent());
+        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "게시글이 생성되었습니다.", boardPostRes);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

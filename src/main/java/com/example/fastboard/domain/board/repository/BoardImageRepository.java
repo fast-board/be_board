@@ -13,6 +13,9 @@ import java.util.List;
 public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
 
     @Modifying
-    @Query("update BoardImage B set B.board.id = :boardId where B.id in :boardImageIdList")
+    @Query("UPDATE BoardImage B SET B.board.id = :boardId WHERE B.id IN :boardImageIdList")
     void updateBoardImage(@Param("boardImageIdList")List<Long> boardImageIdList, @Param("boardId") Long boardId);
+
+    @Modifying
+    void deleteBoardImageByBoardId(Long boardId);
 }

@@ -1,7 +1,11 @@
 package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.dto.parameter.BoardPostParam;
+import com.example.fastboard.domain.board.dto.parameter.BoardUpdateParam;
 import com.example.fastboard.domain.board.entity.Board;
+import com.example.fastboard.domain.board.exception.BoardErrorCode;
+import com.example.fastboard.domain.board.exception.BoardException;
+import com.example.fastboard.domain.board.repository.BoardImageRepository;
 import com.example.fastboard.domain.board.repository.BoardRepository;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.service.MemberFindService;
@@ -20,6 +24,7 @@ public class BoardPostService {
     private final BoardRepository boardRepository;
     private final BoardImagePostService boardImagePostService;
     private final MemberFindService memberFindService;
+    private final BoardImageDeleteService boardImageDeleteService;
 
     @Transactional
     public Board create(BoardPostParam boardPostParam) {
@@ -35,6 +40,24 @@ public class BoardPostService {
 
         if (images.size() > 0) boardImagePostService.connectToBoard(images, board.getId());
         return board;
+    }
+
+    // BoardUpdate.
+    @Transactional
+    public Board update(BoardUpdateParam boardUpdateParam) {
+        Member member = memberFindService.findMemberById(boardUpdateParam.authorId());
+        Board board = boardRepository.findById(boardUpdateParam.boardId()).orElseThrow(() -> new BoardException(BoardErrorCode.BOARD_NOT_FOUND));
+
+        if (member.getId() != board.getMember().getId()) throw new BoardException(BoardErrorCode.MEMBER_NOT_EQUAL);
+        board.setTitle(boardUpdateParam.title());
+        board.setContent(boardUpdateParam.content());
+        board.setCategory(boardUpdateParam.category());
+
+        List<Long> images = getImageId(boardUpdateParam.content());
+        boardImageDeleteService.deleteByBoardId(board.getId());
+        boardImagePostService.connectToBoard(images, board.getId());
+
+        return boardRepository.save(board);
     }
 
     private List<Long> getImageId(String body) {

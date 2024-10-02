@@ -61,4 +61,16 @@ public class Board extends BaseEntitySoftDelete {
     public void updateView(Long view) {
         this.view = view;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }
