@@ -104,6 +104,5 @@ public class BoardController {
         boardDeleteService.deleteBoard(boardId);
         ApiResponse response = new ApiResponse(HttpStatus.NO_CONTENT.value(), "게시글이 삭제되었습니다.", null);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-
     }
 }

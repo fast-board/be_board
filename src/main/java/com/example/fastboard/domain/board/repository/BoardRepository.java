@@ -22,4 +22,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("UPDATE Board B SET B.view = :view WHERE B.id = :id")
     @Modifying
     void updateViewById(Long id, Long view);
+
 }
