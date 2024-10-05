@@ -37,7 +37,7 @@ public enum ErrorCode {
 
 
     //FILE
-    FILE_IS_EMPTY_EXCEPTION(HttpStatus.BAD_REQUEST,"파일이 존재하지 않습니다."),
+    FILE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND,"파일이 존재하지 않습니다."),
     FILE_SIZE_LIMIT_EXCEPTION(HttpStatus.BAD_REQUEST,"파일 용량이 10MB를 초과할 수 없습니다." ),
     FILE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"이미 동일한 디렉토리 또는 파일 존재"),
     PATH_NOT_FOUND(HttpStatus.BAD_REQUEST, "(Path)경로가 존재하지 않습니다."),

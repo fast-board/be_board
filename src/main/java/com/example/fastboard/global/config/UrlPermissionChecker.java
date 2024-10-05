@@ -46,7 +46,7 @@ public class UrlPermissionChecker {
         List<String> permittedUris = PERMITTED_URIS_MAP.get(requestMethod.toUpperCase());
 
         if (permittedUris != null) {
-            return !permittedUris.contains(requestURI);
+            return permittedUris.stream().noneMatch(pattern -> antPathMatcher.match(pattern, requestURI));
         }
 
         return true;
