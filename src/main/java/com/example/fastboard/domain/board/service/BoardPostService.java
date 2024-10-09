@@ -21,10 +21,8 @@ public class BoardPostService {
     private final BoardImagePostService boardImagePostService;
     private final MemberFindService memberFindService;
 
-
     @Transactional
     public Board create(BoardPostParam boardPostParam) {
-
         Member member = memberFindService.findMemberById(boardPostParam.authorId());
         List<Long> images = getImageId(boardPostParam.content());
 
@@ -35,7 +33,7 @@ public class BoardPostService {
                 .category(boardPostParam.category())
                 .build());
 
-        boardImagePostService.connectToBoard(images, board.getId());
+        if (images.size() > 0) boardImagePostService.connectToBoard(images, board.getId());
         return board;
     }
 

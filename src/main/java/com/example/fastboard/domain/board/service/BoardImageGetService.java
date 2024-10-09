@@ -6,14 +6,11 @@ import com.example.fastboard.domain.board.exception.BoardException;
 import com.example.fastboard.domain.board.repository.BoardImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Paths;
+
 
 @Service
 @RequiredArgsConstructor

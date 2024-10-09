@@ -1,5 +1,6 @@
 package com.example.fastboard.domain.member.service;
 
+import com.example.fastboard.domain.board.service.BoardImagePostService;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.exception.MemberErrorCode;
 import com.example.fastboard.domain.member.exception.MemberException;

@@ -1,13 +1,13 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/fast_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 251414
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       format_sql: true
     show-sql: true

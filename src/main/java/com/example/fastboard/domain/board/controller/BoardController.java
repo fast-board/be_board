@@ -1,16 +1,22 @@
 package com.example.fastboard.domain.board.controller;
 
 import com.example.fastboard.domain.board.dto.request.BoardPostReq;
+import com.example.fastboard.domain.board.dto.response.BoardGetRes;
+import com.example.fastboard.domain.board.dto.response.BoardPageRes;
 import com.example.fastboard.domain.board.dto.response.BoardPostRes;
 import com.example.fastboard.domain.board.entity.Board;
+import com.example.fastboard.domain.board.service.BoardGetService;
 import com.example.fastboard.domain.board.service.BoardPostService;
 import com.example.fastboard.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -18,6 +24,7 @@ import java.security.Principal;
 public class BoardController {
 
     private final BoardPostService boardPostService;
+    private final BoardGetService boardGetService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> post(@RequestBody BoardPostReq boardPostReq, Principal principal) {
@@ -30,4 +37,42 @@ public class BoardController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{boardId}")
+    public ResponseEntity<ApiResponse> getBoard(@PathVariable Long boardId) {
+        Board board = boardGetService.getBoard(boardId);
+        BoardGetRes boardGetRes = BoardGetRes.builder()
+                .id(boardId)
+                .author(board.getMember().getNickname())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .view(board.getView())
+                .authorId(board.getMember().getId())
+                .build();
+
+        ApiResponse response = new ApiResponse(HttpStatus.OK.value(), null, boardGetRes);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse> getBoardList(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                    @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria) {
+        List<Board> boards = boardGetService.getBoardList(pageNo, criteria);
+
+        List<BoardPageRes> boardPostResList = new ArrayList<>();
+        for (Board board : boards) {
+            BoardPageRes res = BoardPageRes.builder()
+                    .id(board.getId())
+                    .commentCount(board.getCommentCount())
+                    .content(board.getContent())
+                    .view(board.getView())
+                    .wishCount(board.getWishCount())
+                    .title(board.getTitle())
+                    .build();
+
+            boardPostResList.add(res);
+        }
+
+        ApiResponse response = new ApiResponse(HttpStatus.OK.value(), null, boardPostResList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
