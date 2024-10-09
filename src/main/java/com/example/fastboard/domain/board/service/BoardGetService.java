@@ -20,7 +20,7 @@ public class BoardGetService {
     private final ViewRedisRepository viewRedisRepository;
 
     public Board getBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardException(BoardErrorCode.BOARD_NOT_FOUND));
+        Board board = getBoardNotViewCount(boardId);
         // 조회수 처리 by Redis.
         Long viewCount = viewRedisRepository.get(board);
 
@@ -31,5 +31,10 @@ public class BoardGetService {
     public List<Board> getBoardList(int pageNo, String criteria) {
         Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, criteria));
         return boardRepository.findAll(pageable).getContent();
+    }
+
+    // 단순 조회.
+    public Board getBoardNotViewCount(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(() -> new BoardException(BoardErrorCode.BOARD_NOT_FOUND));
     }
 }

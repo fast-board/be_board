@@ -27,7 +27,10 @@ public class URIConfig {
     );
 
     public static final List<String> PERMIT_ALL_URIS = Arrays.asList(
-            "/h2-console/**"
+            "/h2-console/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
     );
 
     public boolean isNeedAuthentication(String requestURI, String requestMethod) {

@@ -11,7 +11,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @NoArgsConstructor
 @Getter
-@SQLDelete(sql = "UPDATE board_image SET board_id = null, deleted_at = now() WHERE id = ?")
+@SQLDelete(sql = "UPDATE board_image SET board_id = null WHERE id = ?")
 public class BoardImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

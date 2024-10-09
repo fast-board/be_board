@@ -32,8 +32,7 @@ public class BoardImageDeleteService {
     /**
      * Schedule
      */
-//    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     @Async("imageDeleter")
     @Modifying
     @Transactional
