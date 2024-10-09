@@ -18,7 +18,7 @@ public class ViewScheduleService {
     private final ViewRedisRepository viewRedisRepository;
     private final BoardRepository boardRepository;
 
-    @Scheduled(fixedDelay = 5000L)
+    @Scheduled(fixedDelay = 1000 * 60 * 60L)
     @Async("viewCountExecutor")
     @Transactional
     public void viewSchedule() {

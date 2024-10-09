@@ -30,6 +30,7 @@ jwt:
 
 image:
   path : /Users/gongtaehyeon/image/
+#  path : /home/ubuntu/image/
 
 
 
