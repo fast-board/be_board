@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,9 +34,9 @@ public class Board extends BaseEntitySoftDelete {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardImage> boardImages = new ArrayList<>();
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BoardComment> boardComments = new ArrayList<>();
+    private Set<BoardComment> boardComments = new HashSet<>();
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wish> wishes = new ArrayList<>();
+    private Set<Wish> wishes = new HashSet<>();
 
     @Builder
     private Board(
@@ -44,8 +46,8 @@ public class Board extends BaseEntitySoftDelete {
             Category category,
             Member member,
             List<BoardImage> boardImages,
-            List<BoardComment> boardComments,
-            List<Wish> wishes
+            Set<BoardComment> boardComments,
+            Set<Wish> wishes
     ) {
         this.title = title;
         this.content = content;
@@ -61,5 +63,9 @@ public class Board extends BaseEntitySoftDelete {
         this.title=title;
         this.content=content;
         this.category=category;
+    }
+
+    public void plusViewCount(){
+        this.view+=1;
     }
 }

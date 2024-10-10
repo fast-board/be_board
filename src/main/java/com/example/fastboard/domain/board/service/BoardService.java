@@ -2,11 +2,10 @@ package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.dto.request.BoardCreateRequest;
 import com.example.fastboard.domain.board.dto.request.BoardUpdateRequest;
+import com.example.fastboard.domain.board.dto.response.BoardDetailResponse;
 import com.example.fastboard.domain.board.dto.response.BoardResponse;
 import com.example.fastboard.domain.board.entity.Board;
-import com.example.fastboard.domain.board.entity.BoardImage;
 import com.example.fastboard.domain.board.exception.BoardException;
-import com.example.fastboard.domain.board.repository.BoardImageRepository;
 import com.example.fastboard.domain.board.repository.BoardRepository;
 import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.exception.AuthException;
@@ -14,13 +13,14 @@ import com.example.fastboard.domain.member.service.MemberService;
 import com.example.fastboard.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final BoardImageRepository boardImageRepository;
+    private final BoardImageService boardImageService;
     private final MemberService memberService;
 
     @Transactional
@@ -42,46 +42,44 @@ public class BoardService {
 
         Board newBoard = boardRepository.save(board);
 
-        List<String> imagePaths = extractImageSrcFromContent(request.content());
-        imagePaths.forEach(path -> updateImageBoardId(path, board));
+        List<Long> imageIds = extractImageIdFromContent(request.content());
+        imageIds.forEach(id -> boardImageService.updateImageBoardId(id, board));
 
         return newBoard.getId();
     }
 
-    public List<BoardResponse> getAllBoards() {
-        return boardRepository.findAllByDeletedAtIsNull().stream()
-                .map(board -> BoardResponse.fromEntities(board, board.getMember()))
+    public List<BoardResponse> searchList(String title) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        List<BoardResponse> collect = boardRepository.findByTitleContainingOrderByCreatedAtDesc(title).stream()
+                .map(BoardResponse::fromEntities)
                 .collect(Collectors.toList());
+
+        stopWatch.stop();
+        log.info("Execution time: " + stopWatch.getTotalTimeMillis() + " ms");
+
+        return collect;
     }
 
-    private List<String> extractImageSrcFromContent(String content) {
+    public Page<BoardResponse> getAllBoards(Pageable pageable) {
+        return boardRepository.findAllByDeletedAtIsNull(pageable)
+                .map(BoardResponse::fromEntities);
+    }
+
+    private List<Long> extractImageIdFromContent(String content) {
         // content에서 <img src="..."> 태그의 경로를 추출하는 로직
-        List<String> imagePaths = new ArrayList<>();
+        List<Long> imageIds = new ArrayList<>();
         Pattern pattern = Pattern.compile("src=\"([^\"]+)\"");
         Matcher matcher = pattern.matcher(content);
 
         while (matcher.find()) {
             String src = matcher.group(1);
-            imagePaths.add(src);
+            imageIds.add(Long.parseLong(src.substring(src.lastIndexOf("/") + 1)));
         }
-        return imagePaths;
+        return imageIds;
     }
 
-    @Transactional
-    public void updateImageBoardId(String imagePath, Board board) {
-        // 파일 경로에서 uniqueFileName 추출
-        String uniqueFileName = Paths.get(imagePath).getFileName().toString();
-
-        Optional<BoardImage> boardImageOptional = boardImageRepository.findBySaveName(uniqueFileName);
-
-        if (boardImageOptional.isPresent()) {
-            BoardImage boardImage = boardImageOptional.get();
-            boardImage.setBoard(board);
-            boardImageRepository.save(boardImage);
-        } else {
-            log.warn("이미지를 찾을 수 없습니다: uniqueFileName = {}", uniqueFileName);
-        }
-    }
 
     @Transactional
     public Long update(BoardUpdateRequest request, Long memberId, Long boardId) {
@@ -97,7 +95,30 @@ public class BoardService {
     }
 
     public Board findActiveBoardById(Long boardId) {
-        return boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardException(ErrorCode.BOARD_NOT_FOUND_EXCEPTION));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardException(ErrorCode.BOARD_NOT_FOUND_EXCEPTION));
+        if (board.isDelete()) {
+            throw new BoardException(ErrorCode.BOARD_DELETED_EXCEPTION);
+        }
+        return board;
+    }
+
+    @Transactional
+    public BoardDetailResponse loadBoardDetail(Long boardId, Long memberId) {
+        memberService.findActiveMemberById(memberId);
+        Board board = findActiveBoardById(boardId);
+        if (!board.getMember().getId().equals(memberId)) {
+            board.plusViewCount();
+        }
+        return BoardDetailResponse.fromEntities(board);
+    }
+
+    @Transactional
+    public void delete(Long boardId, Long memberId) {
+        Member member = memberService.findActiveMemberById(memberId);
+        Board board = findActiveBoardById(boardId);
+        if (!board.getMember().equals(member)) {
+            throw new AuthException(ErrorCode.AUTHOR_MISMATCH_EXCEPTION);
+        }
+        board.delete();
     }
 }

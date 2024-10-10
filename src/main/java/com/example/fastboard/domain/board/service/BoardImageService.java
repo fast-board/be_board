@@ -1,9 +1,9 @@
 package com.example.fastboard.domain.board.service;
 
+import com.example.fastboard.domain.board.entity.Board;
 import com.example.fastboard.domain.board.entity.BoardImage;
 import com.example.fastboard.domain.board.exception.FileException;
 import com.example.fastboard.domain.board.repository.BoardImageRepository;
-import com.example.fastboard.domain.member.entity.Member;
 import com.example.fastboard.domain.member.service.MemberService;
 import com.example.fastboard.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,9 @@ public class BoardImageService {
     private final MemberService memberService;
 
     @Value("${file.dir}")
-    private String uploadDirectory;
+    private String uploadDirectoryPath;
     private final static long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    private final static String GET_IMAGE_PATH = "http://localhost:8080/api/images/";
 
     @Transactional
     public String store(MultipartFile file, Long memberId) {
@@ -42,7 +43,7 @@ public class BoardImageService {
         }
         String uniqueFileName = generateUniqueFileName(originalFileName);
 
-        Path filePath = Paths.get(uploadDirectory + File.separator + uniqueFileName);
+        Path filePath = Paths.get(uploadDirectoryPath + File.separator + uniqueFileName);
         createDirectoryIfNotExists(filePath.getParent());
         saveFile(file, filePath);
 
@@ -50,14 +51,20 @@ public class BoardImageService {
                 .originalName(originalFileName)
                 .saveName(uniqueFileName)
                 .build();
-        boardImageRepository.save(boardImage);
+        BoardImage saveBoardImage = boardImageRepository.save(boardImage);
 
-        return filePath.toString();
+        return GET_IMAGE_PATH + saveBoardImage.getId();
+    }
+
+    @Transactional
+    public void updateImageBoardId(Long imageId, Board board) {
+        BoardImage image = findById(imageId);
+        image.setBoard(board);
     }
 
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new FileException(ErrorCode.FILE_IS_EMPTY_EXCEPTION);
+            throw new FileException(ErrorCode.FILE_NOT_FOUND_EXCEPTION);
         }
 
         if (file.getSize() > MAX_FILE_SIZE) {
@@ -99,5 +106,16 @@ public class BoardImageService {
             log.error("{} 실패: 알 수 없는 IO 에러 발생: {}", operation, path, e);
             throw new FileException(ErrorCode.FILE_IOEXCEPTION, operation + " 실패");
         }
+    }
+
+    public BoardImage findById(Long imageId) {
+        return boardImageRepository.findById(imageId)
+                .orElseThrow(() -> new FileException(ErrorCode.FILE_NOT_FOUND_EXCEPTION));
+    }
+
+    public File getImage(Long imageId) {
+        BoardImage image = findById(imageId);
+        Path filePath = Paths.get(uploadDirectoryPath + File.separator + image.getSaveName());
+        return new File(filePath.toString());
     }
 }

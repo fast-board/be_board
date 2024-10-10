@@ -24,6 +24,7 @@ public class UrlPermissionChecker {
         ));
         PERMITTED_URIS_MAP.put("GET", Arrays.asList(
                 "/api/boards",
+                "/api/boards/search",
                 "/favicon.ico"
         ));
         PERMITTED_URIS_MAP.put("PUT", Arrays.asList());
@@ -45,7 +46,7 @@ public class UrlPermissionChecker {
         List<String> permittedUris = PERMITTED_URIS_MAP.get(requestMethod.toUpperCase());
 
         if (permittedUris != null) {
-            return !permittedUris.contains(requestURI);
+            return permittedUris.stream().noneMatch(pattern -> antPathMatcher.match(pattern, requestURI));
         }
 
         return true;
