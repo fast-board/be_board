@@ -57,6 +57,38 @@ public class BoardController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse> search(@RequestParam(required = false) String title,
+                                              @RequestParam(required = false) String content,
+                                              @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                              @RequestParam(required = false, defaultValue = "createdAt", value = "page") String criteria,
+                                              Principal principal) {
+        List<Board> boards = new ArrayList<>();
+
+        if (title != null) {
+            boards = boardGetService.getBoardByTitle(title, pageNo, criteria);
+        }
+
+        List<BoardPageRes> boardPostResList = new ArrayList<>();
+        for (Board board : boards) {
+            BoardPageRes res = BoardPageRes.builder()
+                    .id(board.getId())
+                    .commentCount(board.getCommentCount())
+                    .content(board.getContent())
+                    .view(board.getView())
+                    .wishCount(board.getWishCount())
+                    .title(board.getTitle())
+                    .build();
+
+            boardPostResList.add(res);
+        }
+
+        ApiResponse response = new ApiResponse(HttpStatus.OK.value(), null, boardPostResList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse> getBoardList(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
                                                     @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria) {

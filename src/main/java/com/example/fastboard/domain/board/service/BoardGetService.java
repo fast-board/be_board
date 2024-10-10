@@ -37,4 +37,10 @@ public class BoardGetService {
     public Board getBoardNotViewCount(Long boardId) {
         return boardRepository.findById(boardId).orElseThrow(() -> new BoardException(BoardErrorCode.BOARD_NOT_FOUND));
     }
+
+    // 제목 검색
+    public List<Board> getBoardByTitle(String title, int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(Sort.Direction.DESC, criteria));
+        return boardRepository.searchByTitle(pageable, title).getContent();
+    }
 }

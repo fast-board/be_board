@@ -20,6 +20,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("SELECT B FROM Board B JOIN FETCH B.member ")
     Page<Board> findAll(Pageable pageable);
 
+    @Query("SELECT B FROM Board B JOIN FETCH B.member WHERE B.title LIKE %:title%")
+    Page<Board> searchByTitle(Pageable pageable, String title);
+
     @Query("UPDATE Board B SET B.view = :view WHERE B.id = :id")
     @Modifying
     void updateViewById(Long id, Long view);
