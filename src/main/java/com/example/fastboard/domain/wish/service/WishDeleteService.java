@@ -13,7 +13,10 @@ public class WishDeleteService {
     private final WishRepository wishRepository;
 
     public void delete(Long userId, Long boardId) {
-        Wish wish = wishRepository.findByUserIdAndBoardId(userId, boardId).orElseThrow(() -> new WishException(WishErrorCode.WISH_NOT_FOUND));
-        wishRepository.delete(wish);
+        if (!wishRepository.existsByUserIdAndBoardId(userId, boardId)) {
+            throw new WishException(WishErrorCode.WISH_NOT_FOUND);
+        }
+
+        wishRepository.deleteByUserIdAndBoardId(userId, boardId);
     }
 }
