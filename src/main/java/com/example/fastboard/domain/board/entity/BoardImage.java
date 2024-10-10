@@ -2,9 +2,11 @@ package com.example.fastboard.domain.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class BoardImage {
     @Id

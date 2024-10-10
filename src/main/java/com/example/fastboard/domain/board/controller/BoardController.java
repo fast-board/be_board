@@ -4,10 +4,17 @@ import com.example.fastboard.domain.board.dto.request.BoardCreateRequest;
 import com.example.fastboard.domain.board.dto.request.BoardUpdateRequest;
 import com.example.fastboard.domain.board.dto.response.BoardDetailResponse;
 import com.example.fastboard.domain.board.dto.response.BoardResponse;
+import com.example.fastboard.domain.board.entity.Board;
 import com.example.fastboard.domain.board.service.BoardService;
+import com.example.fastboard.global.common.PageResponseDTO;
 import com.example.fastboard.global.common.ResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,19 +39,22 @@ public class BoardController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseDTO<List<BoardResponse>>> getTargetList(
+    public ResponseEntity<ResponseDTO<List<BoardResponse>>> searchList(
             @RequestParam(value = "title", required = false) String title
     ) {
         return ResponseEntity.ok(
-                ResponseDTO.okWithData(boardService.getTargetBoards(title))
+                ResponseDTO.okWithData(boardService.searchList(title))
         );
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDTO<List<BoardResponse>>> getAllList() {
-        List<BoardResponse> allList = boardService.getAllBoards();
+    public ResponseEntity<PageResponseDTO<BoardResponse>> getAllList(
+            @PageableDefault(page = 1, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Pageable adjustedPageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), pageable.getSort());
+        Page<BoardResponse> boardPage = boardService.getAllBoards(adjustedPageable);
         return ResponseEntity.ok(
-                ResponseDTO.okWithData(allList)
+                PageResponseDTO.okWithData(boardPage)
         );
     }
 
@@ -79,4 +89,5 @@ public class BoardController {
         boardService.delete(boardId, memberId);
         return ResponseEntity.ok(ResponseDTO.ok());
     }
+
 }
