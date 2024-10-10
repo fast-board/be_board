@@ -90,13 +90,4 @@ public class BoardController {
         return ResponseEntity.ok(ResponseDTO.ok());
     }
 
-    @GetMapping("/test/{id}")
-    public ResponseEntity<ResponseDTO<Board>> test(
-            @PathVariable Long id
-    ) {
-        Board test = boardService.test(id);
-        return ResponseEntity.ok(
-                ResponseDTO.okWithData(test)
-        );
-    }
 }
