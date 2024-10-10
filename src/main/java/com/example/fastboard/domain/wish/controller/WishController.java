@@ -34,7 +34,7 @@ public class WishController {
     }
 
     @DeleteMapping("/{boardId}")
-    public void deleteWish(@PathVariable Long boardId) {
-
+    public void deleteWish(@PathVariable Long boardId, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
     }
 }
