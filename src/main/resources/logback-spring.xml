@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender class="ch.qos.logback.core.rolling.RollingFileAppender" name="RollingFile">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <file>${LOGS}/fast-board-logger.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/fast-board-logger-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>20</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <property name="LOGS" value="./logs"/>
+
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="RollingFile"/>
+    </root>
+</configuration>
