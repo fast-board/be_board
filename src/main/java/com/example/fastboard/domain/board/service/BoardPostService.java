@@ -42,7 +42,6 @@ public class BoardPostService {
         return board;
     }
 
-    // BoardUpdate.
     @Transactional
     public Board update(BoardUpdateParam boardUpdateParam) {
         Member member = memberFindService.findMemberById(boardUpdateParam.authorId());
