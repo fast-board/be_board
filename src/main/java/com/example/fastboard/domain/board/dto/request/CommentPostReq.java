@@ -4,6 +4,5 @@ import lombok.Builder;
 
 @Builder
 public record CommentPostReq (
-        String content,
-        Long parentCommentId
+        String content
 ) {}

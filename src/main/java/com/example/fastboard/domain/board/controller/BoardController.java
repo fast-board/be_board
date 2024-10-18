@@ -148,7 +148,7 @@ public class BoardController {
     @PostMapping("/{boardId}/comments")
     public ResponseEntity<ApiResponse> postComment(@PathVariable Long boardId, @RequestBody CommentPostReq commentPostReq, Principal principal) {
         Long userId = Long.parseLong(principal.getName());
-        CommentPostParam commentPostParam = new CommentPostParam(boardId, userId, commentPostReq);
+        CommentPostParam commentPostParam = new CommentPostParam(boardId, userId, null ,commentPostReq);
         BoardComment boardComment = commentPostService.saveComment(commentPostParam);
 
         CommentGetRes body = CommentGetRes.builder()
@@ -158,7 +158,26 @@ public class BoardController {
                 .authorId(boardComment.getMember().getId())
                 .build();
 
-        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "게시글이 생성되었습니다", body);
+        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "댓글이 생성되었습니다", body);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{boardId}/comments/{commentId}")
+    public ResponseEntity<ApiResponse> postChildComment(@PathVariable Long boardId, @PathVariable Long commentId, @RequestBody CommentPostReq commentPostReq, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        CommentPostParam commentPostParam = new CommentPostParam(boardId, userId, commentId ,commentPostReq);
+        BoardComment boardComment = commentPostService.saveComment(commentPostParam);
+
+
+        CommentGetRes body = CommentGetRes.builder()
+                .commentId(boardComment.getId())
+                .author(boardComment.getMember().getNickname())
+                .content(boardComment.getContent())
+                .authorId(boardComment.getMember().getId())
+                .build();
+
+        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "대댓글이 생성되었습니다", body);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

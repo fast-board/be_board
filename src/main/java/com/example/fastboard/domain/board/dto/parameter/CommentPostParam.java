@@ -8,10 +8,10 @@ public class CommentPostParam {
     public Long parentId;
     public String content;
 
-    public CommentPostParam(Long boardId, Long userId, CommentPostReq commentPostReq) {
+    public CommentPostParam(Long boardId, Long userId, Long parentId ,CommentPostReq commentPostReq) {
         this.boardId = boardId;
         this.userId = userId;
-        this.parentId = commentPostReq.parentCommentId();
+        this.parentId = parentId;
         this.content = commentPostReq.content();
     }
 }
