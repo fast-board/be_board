@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class BoardImageController {
     public final BoardImagePostService boardImagePostService;
     public final BoardImageGetService boardImageGetService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse> createBoardImage(@RequestParam(value = "image") MultipartFile file) {
         BoardImage boardImage = boardImagePostService.upload(file);
 
