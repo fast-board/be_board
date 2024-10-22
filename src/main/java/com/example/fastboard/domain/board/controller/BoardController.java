@@ -2,6 +2,7 @@ package com.example.fastboard.domain.board.controller;
 
 import com.example.fastboard.domain.board.dto.parameter.BoardPostParam;
 import com.example.fastboard.domain.board.dto.parameter.BoardUpdateParam;
+import com.example.fastboard.domain.board.dto.parameter.CommentDeleteParam;
 import com.example.fastboard.domain.board.dto.parameter.CommentPostParam;
 import com.example.fastboard.domain.board.dto.request.BoardPostReq;
 import com.example.fastboard.domain.board.dto.request.CommentPostReq;
@@ -37,6 +38,7 @@ public class BoardController {
     private final BoardDeleteService boardDeleteService;
     private final CommentPostService commentPostService;
     private final CommentGetService commentGetService;
+    private final CommentDeleteService commentDeleteService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> post(@RequestBody BoardPostReq boardPostReq, Principal principal) {
@@ -192,8 +194,6 @@ public class BoardController {
        List<CommentGetRes> commentGetResList = new ArrayList<>();
        Map<Long, CommentGetRes> map = new HashMap<>();
 
-       log.info("size : {}", boardComments.size());
-
        boardComments.stream().forEach(c -> {
            CommentGetRes comment = CommentGetRes.builder()
                    .commentId(c.getId())
@@ -213,5 +213,21 @@ public class BoardController {
 
        ApiResponse body = new ApiResponse(HttpStatus.OK.value(), null, commentGetResList);
        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{boardId}/{commentId}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable Long boardId, @PathVariable Long commentId, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+
+        CommentDeleteParam param = CommentDeleteParam.builder()
+                .commentId(commentId)
+                .boardId(boardId)
+                .userId(userId)
+                .build();
+
+        commentDeleteService.deleteComment(param);
+
+        ApiResponse body = new ApiResponse(HttpStatus.NO_CONTENT.value(), "댓글이 삭제되었습니다.", null);
+        return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
     }
 }
