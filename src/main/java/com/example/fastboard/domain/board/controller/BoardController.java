@@ -2,33 +2,41 @@ package com.example.fastboard.domain.board.controller;
 
 import com.example.fastboard.domain.board.dto.parameter.BoardPostParam;
 import com.example.fastboard.domain.board.dto.parameter.BoardUpdateParam;
+import com.example.fastboard.domain.board.dto.parameter.CommentPostParam;
 import com.example.fastboard.domain.board.dto.request.BoardPostReq;
+import com.example.fastboard.domain.board.dto.request.CommentPostReq;
 import com.example.fastboard.domain.board.dto.response.BoardGetRes;
 import com.example.fastboard.domain.board.dto.response.BoardPageRes;
 import com.example.fastboard.domain.board.dto.response.BoardPostRes;
+import com.example.fastboard.domain.board.dto.response.CommentGetRes;
 import com.example.fastboard.domain.board.entity.Board;
-import com.example.fastboard.domain.board.service.BoardDeleteService;
-import com.example.fastboard.domain.board.service.BoardGetService;
-import com.example.fastboard.domain.board.service.BoardPostService;
+import com.example.fastboard.domain.board.entity.BoardComment;
+import com.example.fastboard.domain.board.service.*;
 import com.example.fastboard.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/boards")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardPostService boardPostService;
     private final BoardGetService boardGetService;
     private final BoardDeleteService boardDeleteService;
+    private final CommentPostService commentPostService;
+    private final CommentGetService commentGetService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> post(@RequestBody BoardPostReq boardPostReq, Principal principal) {
@@ -136,5 +144,74 @@ public class BoardController {
         boardDeleteService.deleteBoard(boardId);
         ApiResponse response = new ApiResponse(HttpStatus.NO_CONTENT.value(), "게시글이 삭제되었습니다.", null);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+    }
+
+
+    @PostMapping("/{boardId}/comments")
+    public ResponseEntity<ApiResponse> postComment(@PathVariable Long boardId, @RequestBody CommentPostReq commentPostReq, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        CommentPostParam commentPostParam = new CommentPostParam(boardId, userId, null ,commentPostReq);
+        BoardComment boardComment = commentPostService.saveComment(commentPostParam);
+
+        CommentGetRes body = CommentGetRes.builder()
+                .commentId(boardComment.getId())
+                .author(boardComment.getMember().getNickname())
+                .content(boardComment.getContent())
+                .authorId(boardComment.getMember().getId())
+                .build();
+
+        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "댓글이 생성되었습니다", body);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{boardId}/comments/{commentId}")
+    public ResponseEntity<ApiResponse> postChildComment(@PathVariable Long boardId, @PathVariable Long commentId, @RequestBody CommentPostReq commentPostReq, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+        CommentPostParam commentPostParam = new CommentPostParam(boardId, userId, commentId ,commentPostReq);
+        BoardComment boardComment = commentPostService.saveComment(commentPostParam);
+
+        CommentGetRes body = CommentGetRes.builder()
+                .commentId(boardComment.getId())
+                .author(boardComment.getMember().getNickname())
+                .content(boardComment.getContent())
+                .authorId(boardComment.getMember().getId())
+                .build();
+
+        ApiResponse response = new ApiResponse(HttpStatus.CREATED.value(), "대댓글이 생성되었습니다", body);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{boardId}/comments")
+    public ResponseEntity<ApiResponse> getComments(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                   @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria,
+                                                   @PathVariable Long boardId) {
+       List<BoardComment> boardComments = commentGetService.getComments(boardId, pageNo, criteria);
+
+       List<CommentGetRes> commentGetResList = new ArrayList<>();
+       Map<Long, CommentGetRes> map = new HashMap<>();
+
+       log.info("size : {}", boardComments.size());
+
+       boardComments.stream().forEach(c -> {
+           CommentGetRes comment = CommentGetRes.builder()
+                   .commentId(c.getId())
+                   .content(c.getContent())
+                   .author(c.getMember().getNickname())
+                   .authorId(c.getMember().getId())
+                   .childComments(new ArrayList<>())
+                   .build();
+
+           map.put(c.getId(), comment);
+           if (c.getParentComment() != null) {
+               map.get(c.getParentComment().getId()).childComments().add(comment);
+           }
+           else commentGetResList.add(comment);
+       });
+
+
+       ApiResponse body = new ApiResponse(HttpStatus.OK.value(), null, commentGetResList);
+       return new ResponseEntity<>(body, HttpStatus.OK);
     }
 }
