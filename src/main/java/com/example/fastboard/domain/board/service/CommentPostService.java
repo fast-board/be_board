@@ -1,6 +1,7 @@
 package com.example.fastboard.domain.board.service;
 
 import com.example.fastboard.domain.board.dto.parameter.CommentPostParam;
+import com.example.fastboard.domain.board.dto.parameter.CommentUpdateParam;
 import com.example.fastboard.domain.board.entity.Board;
 import com.example.fastboard.domain.board.entity.BoardComment;
 import com.example.fastboard.domain.board.exception.BoardErrorCode;
@@ -17,6 +18,7 @@ public class CommentPostService {
     private final BoardCommentRepository boardCommentRepository;
     private final BoardGetService boardGetService;
     private final MemberFindService memberFindService;
+    private final CommentGetService commentGetService;
 
     public BoardComment saveComment(CommentPostParam commentPostParam) {
         // 보드 조회.
@@ -38,6 +40,16 @@ public class CommentPostService {
                 .parentBoard(board)
                 .build();
 
+        return boardCommentRepository.save(comment);
+    }
+
+    public BoardComment updateComment(CommentUpdateParam param) {
+        BoardComment comment = commentGetService.getComment(param.commentId());
+
+        if (comment.getMember().getId() != param.userId())
+            throw new BoardException(BoardErrorCode.NOT_COMMENT_USER);
+
+        comment.setContent(param.content());
         return boardCommentRepository.save(comment);
     }
 }
