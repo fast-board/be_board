@@ -7,7 +7,8 @@ public enum BoardErrorCode implements ErrorCode {
     IMAGE_UPLOAD_FAIL("이미지 업로드에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     IMAGE_NOT_FOUND("이미지를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     MEMBER_NOT_EQUAL("게시글의 작성자가 압니니다.", HttpStatus.BAD_REQUEST),
-    BOARD_NOT_FOUND("해당 게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+    BOARD_NOT_FOUND("해당 게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    NOT_FOUND_COMMENT("해당 댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
 
     private final String message;
