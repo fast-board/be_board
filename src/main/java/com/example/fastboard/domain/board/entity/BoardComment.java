@@ -38,4 +38,8 @@ public class BoardComment extends BaseEntitySoftDelete {
         this.member = member;
         this.parentComment = parentComment;
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

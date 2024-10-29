@@ -1,9 +1,6 @@
 package com.example.fastboard.domain.board.controller;
 
-import com.example.fastboard.domain.board.dto.parameter.BoardPostParam;
-import com.example.fastboard.domain.board.dto.parameter.BoardUpdateParam;
-import com.example.fastboard.domain.board.dto.parameter.CommentDeleteParam;
-import com.example.fastboard.domain.board.dto.parameter.CommentPostParam;
+import com.example.fastboard.domain.board.dto.parameter.*;
 import com.example.fastboard.domain.board.dto.request.BoardPostReq;
 import com.example.fastboard.domain.board.dto.request.CommentPostReq;
 import com.example.fastboard.domain.board.dto.response.BoardGetRes;
@@ -229,5 +226,29 @@ public class BoardController {
 
         ApiResponse body = new ApiResponse(HttpStatus.NO_CONTENT.value(), "댓글이 삭제되었습니다.", null);
         return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{boardId}/{commentId}")
+    public ResponseEntity<ApiResponse> update(@PathVariable Long boardId, @PathVariable Long commentId, @RequestBody CommentPostReq commentPostReq, Principal principal) {
+        Long userId = Long.parseLong(principal.getName());
+
+        CommentUpdateParam param = CommentUpdateParam.builder()
+                .commentId(commentId)
+                .boardId(boardId)
+                .userId(userId)
+                .content(commentPostReq.content())
+                .build();
+
+        BoardComment comment= commentPostService.updateComment(param);
+
+        CommentGetRes commentGetRes = CommentGetRes.builder()
+                .commentId(comment.getId())
+                .author(comment.getMember().getNickname())
+                .content(comment.getContent())
+                .authorId(comment.getMember().getId())
+                .build();
+
+        ApiResponse body = new ApiResponse(HttpStatus.OK.value(), "댓글이 변경되었습니다.", commentGetRes);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 }
